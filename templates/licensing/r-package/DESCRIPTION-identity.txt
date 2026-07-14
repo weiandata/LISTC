@@ -1,0 +1,7 @@
+Authors@R: c(
+    person("Kunxiang", "Ma", role = c("aut", "cre"),
+           email = "makunxiang@weiandata.com"),
+    person("WEIAN DATA TECH (Beijing) Co., Ltd.",
+           role = c("cph", "fnd"), email = "contact@weiandata.com"))
+License: GPL (>= 2)
+Copyright: See file inst/COPYRIGHTS.
