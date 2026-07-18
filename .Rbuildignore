@@ -19,3 +19,4 @@
 ^realdata$
 ^.*\.tar\.gz$
 ^LISTC\.Rcheck$
+^CRAN-SUBMISSION\.md$
