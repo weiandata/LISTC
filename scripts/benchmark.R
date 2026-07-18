@@ -2,7 +2,12 @@
 # 运行: Rscript scripts/benchmark.R [n]  (默认 1e6;验收线用 5e6)
 # 记录典型任务耗时与峰值内存;16GB 环境验收: 5e6 全套表 < 5 分钟
 
-suppressPackageStartupMessages(library(LISTR))
+# 未安装时回退到 devtools::load_all(从包根目录运行)
+if (!requireNamespace("LISTR", quietly = TRUE)) {
+  suppressPackageStartupMessages(devtools::load_all(".", quiet = TRUE))
+} else {
+  suppressPackageStartupMessages(library(LISTR))
+}
 
 args <- commandArgs(trailingOnly = TRUE)
 n <- if (length(args) >= 1) as.numeric(args[1]) else 1e6
@@ -32,8 +37,10 @@ bench <- function(label, expr) {
   gc(reset = TRUE)
   t <- system.time(expr)
   g <- gc()
-  cat(sprintf("%-38s %8.2fs  peak %6.0f MB\n", label, t[["elapsed"]],
-              sum(g[, 6])))
+  # "max used" 对应的 (Mb) 列:取名为 "(Mb)" 的最后一列
+  mb_cols <- which(colnames(g) == "(Mb)")
+  peak <- sum(g[, mb_cols[length(mb_cols)]])
+  cat(sprintf("%-38s %8.2fs  peak %6.0f MB\n", label, t[["elapsed"]], peak))
 }
 
 x <- NULL

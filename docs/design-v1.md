@@ -306,6 +306,18 @@ jsonlite, yaml, data.table。
 - 扩展点:聚合层封装为内部接口,v3 视需求加 duckdb/arrow
   后端应对千万级以上(与 replicate weights 引擎同期评估)
 
+实测(2026-07-18,Apple Silicon,scripts/benchmark.R):
+
+| 任务(50 作答列) | 100 万人 | 500 万人 |
+| --- | --- | --- |
+| lst_data 角色+校验 | 0.00s | 0.02s |
+| 均值+prob占比+等级 10x2+margins | 2.0s | 10.5s |
+| 三维分组 10x2x6 | 0.3s | 1.0s |
+| 50 题正答率 x 10 组 | 1.6s | 7.7s |
+| latent 校正(含 rho 估计) | 0.3s | 1.1s |
+
+500 万人全套表 10.5s,远低于 5 分钟验收线;§9.1 目标达成。
+
 ## 10. 测试计划
 
 - 加权公式对照 `stats::weighted.mean` 与手算值
