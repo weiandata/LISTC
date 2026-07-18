@@ -3,6 +3,7 @@
 
 #' @importFrom stats pnorm dnorm weighted.mean quantile complete.cases
 #' @importFrom rlang abort enquo enquos
+#' @importFrom data.table := .N .SD .BY
 NULL
 
 # data.table 感知声明

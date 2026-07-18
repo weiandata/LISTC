@@ -19,6 +19,10 @@ lst_interpret <- function(tab, lang = c("zh", "en")) {
 
   for (stat in tab$values) {
     m <- tab$meta[[stat]]
+    if (m$type %in% c("level_prop", "pvalue")) {
+      out <- c(out, interpret_categorical(tab, stat, m, grp_vars))
+      next
+    }
     if (!m$type %in% c("mean", "sd", "prop_above")) next
     d <- long[long$statistic == stat, , drop = FALSE]
     if (length(grp_vars) > 0) {
@@ -70,6 +74,72 @@ lst_interpret <- function(tab, lang = c("zh", "en")) {
   }
   if (length(out) == 0) {
     out <- "(\u672c\u8868\u6682\u65e0\u81ea\u52a8\u89e3\u8bfb\u89c4\u5219\u9002\u7528\u7684\u7edf\u8ba1\u91cf\u3002)"
+  }
+  out
+}
+
+# \u7b49\u7ea7\u5360\u6bd4 / \u9898\u76ee\u6b63\u7b54\u7387\u7684\u89e3\u8bfb\u89c4\u5219(v0.2)
+interpret_categorical <- function(tab, stat, m, grp_vars) {
+  long <- tab$long
+  d <- long[long$statistic == stat & !is.na(long$category), , drop = FALSE]
+  if (length(grp_vars) > 0) {
+    not_total <- rowSums(sapply(grp_vars, function(g) {
+      d[[g]] == TOTAL_LABEL
+    }, simplify = "matrix")) == 0
+    total_only <- !not_total
+  } else {
+    not_total <- rep(TRUE, nrow(d))
+    total_only <- rep(TRUE, nrow(d))
+  }
+  d_all <- d[if (any(total_only)) total_only else not_total, , drop = FALSE]
+  d_grp <- d[not_total, , drop = FALSE]
+  out <- character(0)
+  pct <- function(v) paste0(sprintf("%.1f", 100 * v), "%")
+
+  if (m$type == "level_prop") {
+    # \u603b\u4f53\u4e3b\u5bfc\u7b49\u7ea7
+    agg <- tapply(d_all$estimate, d_all$category, mean, na.rm = TRUE)
+    if (length(agg) > 0) {
+      top <- names(agg)[which.max(agg)]
+      out <- c(out, paste0(
+        "[", stat, "] \u603b\u4f53\u4e0a\u5360\u6bd4\u6700\u9ad8\u7684\u7b49\u7ea7\u662f\"", top,
+        "\"(", pct(max(agg, na.rm = TRUE)), ")\u3002"
+      ))
+    }
+    # \u6700\u9ad8\u7b49\u7ea7(\u6700\u540e\u4e00\u4e2a category)\u5728\u7ec4\u95f4\u7684\u5dee\u5f02
+    if (length(grp_vars) > 0 && nrow(d_grp) > 0) {
+      last_lvl <- utils::tail(unique(d$category), 1)
+      dg <- d_grp[d_grp$category == last_lvl & !is.na(d_grp$estimate), ,
+                  drop = FALSE]
+      if (nrow(dg) >= 2) {
+        lab <- apply(dg[, grp_vars, drop = FALSE], 1, paste, collapse = "-")
+        i_max <- which.max(dg$estimate)
+        i_min <- which.min(dg$estimate)
+        out <- c(out, paste0(
+          "[", stat, "] \"", last_lvl, "\"\u7b49\u7ea7\u5360\u6bd4\u6700\u9ad8\u7684\u662f ", lab[i_max],
+          "(", pct(dg$estimate[i_max]), "),\u6700\u4f4e\u7684\u662f ", lab[i_min],
+          "(", pct(dg$estimate[i_min]), ")\u3002"
+        ))
+      }
+    }
+  } else { # pvalue
+    agg <- tapply(d_all$estimate, d_all$category, mean, na.rm = TRUE)
+    if (length(agg) >= 2) {
+      easiest <- names(agg)[which.max(agg)]
+      hardest <- names(agg)[which.min(agg)]
+      out <- c(out, paste0(
+        "[", stat, "] \u6b63\u7b54\u7387\u6700\u9ad8\u7684\u9898\u76ee\u662f ", easiest,
+        "(", pct(max(agg, na.rm = TRUE)), "),\u6700\u4f4e\u7684\u662f ", hardest,
+        "(", pct(min(agg, na.rm = TRUE)), ")\u3002"
+      ))
+      low <- agg[agg < 0.2]
+      if (length(low) > 0) {
+        out <- c(out, paste0(
+          "[", stat, "] \u6ce8\u610f: ", paste(names(low), collapse = "\u3001"),
+          " \u7684\u6b63\u7b54\u7387\u4f4e\u4e8e 20%,\u5efa\u8bae\u68c0\u67e5\u9898\u76ee\u8d28\u91cf\u6216\u6559\u5b66\u8986\u76d6\u3002"
+        ))
+      }
+    }
   }
   out
 }

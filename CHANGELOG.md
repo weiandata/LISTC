@@ -9,6 +9,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- v0.2 features: Excel configuration workbook (`lst_config_template()`,
+  xlsx parsing in `lst_config()`/`lst_run()`, bundled bilingual template
+  with instructions), Winsteps PFILE and ConQuest person-file readers
+  (`read_winsteps_pfile()`, `read_conquest_person()`), Woodruff SE for
+  `st_quantile()`, interpretation rules for level proportions and item
+  p-values, introductory vignette (`LISTR-intro`), and a performance
+  benchmark script (`scripts/benchmark.R`).
+
 - v0.1 implementation of the LISTR package: `lst_data()` roles/validation,
   weighted statistics (`st_mean`, `st_sd`, `st_prop_above`,
   `st_level_prop`, `st_quantile`, `st_count`/`st_wcount`, `st_pvalue`,

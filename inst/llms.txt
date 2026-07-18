@@ -41,12 +41,17 @@ x estimate/se_sampling/se_measurement/se_total), per-statistic metadata
 (method, n, sum of weights), and an `interpretation` field with rule-based
 plain-language conclusions.
 
+Config can also be an Excel workbook filled from the bundled template
+(lst_config_template() writes it); same structure as YAML.
+
 ## Function-level API (alternative)
 
     d <- lst_data(df, id=, group=, weight=, theta=, theta_se=, resp=, key=)
     tab <- lst_table(d, rows=, cols=, values=list(...), format="est_se")
     as_long(tab); as_wide(tab)
     lst_to_excel(tab, "out.xlsx"); lst_to_json(tab)
+    read_winsteps_pfile("p.txt"); read_conquest_person("c.wle")
+    lst_join_person(d, person, dim = "math")
 
 Statistics: st_mean, st_prop_above, st_level_prop, st_quantile, st_sd,
 st_count, st_wcount, st_pvalue (item p-values), st_option_dist.

@@ -2,16 +2,22 @@
 % Please edit documentation in R/read-irt.R
 \name{read_conquest_person}
 \alias{read_conquest_person}
-\title{Read ConQuest person estimate output}
+\title{Read ConQuest person estimate output (WLE/EAP tables)}
 \usage{
-read_conquest_person(path)
+read_conquest_person(path, cols = c(id = 2, theta = 5, theta_se = 6))
 }
 \arguments{
-\item{path}{ConQuest show/plausible output path.}
+\item{path}{ConQuest person file path.}
+
+\item{cols}{Named integer vector giving 1-based column positions for
+\code{id}, \code{theta}, \code{theta_se}.}
 }
 \value{
 Tibble with columns id, theta, theta_se.
 }
 \description{
-Planned for v0.2.
+Reads whitespace-delimited ConQuest person files (e.g. \verb{show cases}
+output or \code{.wle} files). ConQuest files rarely carry headers, so the
+column positions are declared explicitly and default to the common
+6-column WLE layout: seq, id, score, max, theta, se.
 }

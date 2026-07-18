@@ -4,14 +4,21 @@
 \alias{read_winsteps_pfile}
 \title{Read a Winsteps PFILE (person parameter file)}
 \usage{
-read_winsteps_pfile(path)
+read_winsteps_pfile(path, id_col = NULL, theta_col = NULL, se_col = NULL)
 }
 \arguments{
 \item{path}{PFILE path.}
+
+\item{id_col, theta_col, se_col}{Optional column-name overrides.}
 }
 \value{
-Tibble with columns id, theta, theta_se and fit statistics.
+Tibble with columns id, theta, theta_se plus the remaining
+PFILE columns.
 }
 \description{
-Planned for v0.2.
+Handles both fixed/whitespace PFILE output and csv PFILE
+(\code{PFILE=xxx.csv}). Comment lines starting with \verb{;} are skipped; the
+header row is located by the presence of a \code{MEASURE} column. The SE
+column is taken from \code{ERROR} (or \code{MODLSE}), the id from \code{NAME}
+(falling back to \code{ENTRY}).
 }

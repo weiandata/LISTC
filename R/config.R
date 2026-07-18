@@ -89,8 +89,7 @@ parse_config <- function(config) {
         yaml = yaml::read_yaml(config),
         json = jsonlite::fromJSON(config, simplifyVector = TRUE,
                                   simplifyDataFrame = FALSE),
-        xlsx = rlang::abort(
-          "Excel \u914d\u7f6e\u7c3f\u5c06\u5728 v0.2 \u652f\u6301;\u5f53\u524d\u8bf7\u4f7f\u7528 YAML \u6216 JSON \u914d\u7f6e\u3002"),
+        xlsx = parse_config_xlsx(config),
         rlang::abort(paste0("\u65e0\u6cd5\u8bc6\u522b\u7684\u914d\u7f6e\u6587\u4ef6\u683c\u5f0f: .", ext))
       ))
     }

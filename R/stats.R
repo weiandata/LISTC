@@ -174,8 +174,13 @@ compute_stat <- function(spec, x, w, se = NULL) {
     quantile = {
       qs <- wquantile(x, w, p$probs)
       do.call(rbind, lapply(seq_along(p$probs), function(i) {
-        stat_row(paste0("p", p$probs[i] * 100), qs[i], NA_real_, NA_real_,
-                 n, sw)
+        # Woodruff 法:CDF 的抽样 SE 经分位数函数反演
+        ind <- as.numeric(x <= qs[i])
+        se_f <- sqrt(var_sampling_mean(ind, w))
+        lo <- max(p$probs[i] - 1.96 * se_f, 0)
+        hi <- min(p$probs[i] + 1.96 * se_f, 1)
+        vs <- ((wquantile(x, w, hi) - wquantile(x, w, lo)) / (2 * 1.96))^2
+        stat_row(paste0("p", p$probs[i] * 100), qs[i], vs, 0, n, sw)
       }))
     },
     count = stat_row(NA_character_, n, 0, 0, n, sw),

@@ -319,12 +319,14 @@ jsonlite, yaml, data.table。
 
 ## 11. 路线图
 
-- v0.1:spec + 通用导入 + st_mean/st_prop_above/st_level_prop +
-  st_pvalue/st_option_dist(题目层)+ 误差传递(含 unshrink
-  校正)+ lst_table + 中文样式 Excel 导出 +
+- v0.1(2026-07-18 完成):spec + 通用导入 +
+  st_mean/st_prop_above/st_level_prop + st_pvalue/st_option_dist +
+  误差传递(latent 校正)+ lst_table + 中文样式 Excel 导出 +
   lst_run(YAML/JSON 配置)+ lst_to_json + llms.txt/schema
-- v0.2:Excel 配置模板簿、lst_interpret 自动解读、
-  Winsteps/ConQuest 解析器、分位数、margins 完整支持
+- v0.2(2026-07-18 实现,待验收):Excel 配置模板簿
+  (lst_config_template + xlsx 解析)、Winsteps/ConQuest 解析器、
+  分位数 Woodruff SE、lst_interpret 等级/题目规则、
+  vignette(LISTR-intro)、性能基准脚本(scripts/benchmark.R)
 - v0.3:replicate weights 方差引擎
 - v0.4:plausible values(Rubin 合并)引擎、HTML 渲染
 - v1.0:CRAN 提交

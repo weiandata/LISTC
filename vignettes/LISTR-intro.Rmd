@@ -1,0 +1,138 @@
+---
+title: "LISTR 入门:从样本数据到带标准误的透视统计表"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{LISTR 入门:从样本数据到带标准误的透视统计表}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+LISTR 把测评/调查样本数据变成像 Excel 数据透视表一样可自由定制的
+统计表——不同的是,每个单元格都带有测量学上正确的标准误
+(抽样方差 + 由个体 IRT 标准误传递的测量方差)。
+
+本文覆盖三种用法:统计人员的函数 API、调查人员的配置模板,
+以及给 AI agent 的机器可读输出。
+
+## 准备示例数据
+
+```{r}
+library(LISTR)
+set.seed(2026)
+n <- 3000
+demo <- data.frame(
+  student_id = sprintf("S%05d", seq_len(n)),
+  region = sample(c("东部", "中部", "西部"), n, TRUE, c(.4, .35, .25)),
+  gender = sample(c("男", "女"), n, TRUE),
+  w_final = runif(n, 0.5, 2),
+  th_math = rnorm(n),
+  se_math = runif(n, 0.25, 0.45),
+  raw_total = rpois(n, 40)
+)
+```
+
+## 第一步:声明变量角色
+
+`lst_data()` 给数据框贴上"角色"标签。theta 与 theta_se 必须按
+维度成对声明:
+
+```{r}
+x <- lst_data(demo,
+  id = student_id,
+  group = c(region, gender),
+  weight = w_final,
+  theta = c(math = th_math),
+  theta_se = c(math = se_math),
+  score = raw_total
+)
+x
+```
+
+## 第二步:定义透视表
+
+行、列、单元格统计量自由组合;`margins = TRUE` 追加合计行列:
+
+```{r}
+lv <- c(待提高 = -Inf, 合格 = -0.5, 良好 = 0.5, 优秀 = 1.2)
+tab <- lst_table(x,
+  rows = region, cols = gender,
+  values = list(
+    平均能力 = st_mean(math),
+    优秀率 = st_prop_above(math, cutoff = 1.2, method = "prob"),
+    等级 = st_level_prop(math, breaks = lv, method = "prob"),
+    人数 = st_count()
+  ),
+  margins = TRUE
+)
+tab
+```
+
+`as_long()` 返回 tidy 长表,包含 SE 的三个分量
+(se_sampling / se_measurement / se_total),可直接进入
+tidyverse 流程做二次计算:
+
+```{r}
+head(as_long(tab))
+```
+
+## 方法说明:prob 与 correction 怎么选
+
+- `method = "hard"`:按点估计硬分类。简单,但分数线附近的
+  误分类会使等级占比有偏。
+- `method = "prob"`(推荐):利用每个人的 theta ± SE 计算落入
+  各等级的概率再聚合,对测量误差稳健。
+- `correction` 取决于能力值的估计方法:
+  - **EAP + 后验标准差**(如 flexMIRT/mirt 的 EAP 输出):
+    保持默认 `"none"`。概率化公式此时就是后验概率,聚合结果
+    已经校准——蒙特卡洛实验显示不需要额外校正。
+  - **WLE/ML + 抽样标准误**(如 Winsteps/ConQuest 的 WLE):
+    用 `"latent"`。无偏估计的观测分布比潜在分布更散,naive
+    概率化会高估极端等级占比;`"latent"` 先做经验贝叶斯收缩
+    (可靠性 rho 自动估计,也可用 `rho =` 显式给定)。
+
+```{r}
+lst_table(x, rows = region, values = list(
+  优秀率_latent = st_prop_above(math, cutoff = 1.2,
+                                method = "prob", correction = "latent")
+))
+```
+
+## 第三步:输出
+
+```{r, eval = FALSE}
+lst_to_excel(tab, "results.xlsx", overwrite = TRUE) # 中文样式 + 结论 sheet
+lst_to_json(tab)                                    # 给 AI agent / 二次分析
+lst_interpret(tab)                                  # 规则化自动解读文字
+```
+
+## 调查人员:配置模板 + 一键运行
+
+不写 R 代码的同事可以填 Excel 配置簿:
+
+```{r, eval = FALSE}
+lst_config_template("LISTR配置.xlsx") # 生成模板,按"说明"sheet 填写
+lst_run("LISTR配置.xlsx")             # 一键出全部结果
+```
+
+YAML/JSON 配置与之等价(AI agent 通常生成这种),
+schema 见 `system.file("schema/config.schema.json", package = "LISTR")`,
+面向 LLM 的 API 文档见 `system.file("llms.txt", package = "LISTR")`。
+
+## 从 IRT 软件导入人参数
+
+```{r, eval = FALSE}
+pf <- read_winsteps_pfile("person.pfile")   # 或 read_conquest_person()
+x <- lst_data(demo, id = student_id, group = region) |>
+  lst_join_person(pf, dim = "math")
+```
+
+## 局限与展望
+
+- SE 传递假定个体测量误差相互独立;整群抽样的设计效应需要
+  replicate weights(计划 v0.3)。
+- plausible values 的 Rubin 合并计划 v0.4。
+- `correction = "latent"` 基于正态模型;偏态潜在分布下是近似。
