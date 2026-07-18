@@ -17,15 +17,18 @@ built-in default label (Chinese for "missing").}
 A statistic spec for \code{\link[=lst_table]{lst_table()}}.
 }
 \description{
-Unlike the other statistics, this one reports point estimates only:
-\code{se_sampling}, \code{se_measurement} and \code{se_total} are \code{NA} for every
-option category, under linearization and under replicate weights
-alike. Option distributions are used for item screening rather than
-for reported estimates, so no variance estimator is implemented yet.
-Note that the table metadata still records the variance engine that
-was in effect for the other statistics in the same table. Use
-\code{\link[=st_pvalue]{st_pvalue()}}, which does carry sampling standard errors, when you
-need an item statistic with a standard error.
+Each option share is the weighted mean of a 0/1 indicator for that
+option, so it carries a sampling standard error from the same engine
+as the other statistics: linearized by default, or replicate-based
+when \code{rep_weights} are declared. Missing responses form their own
+category, and within an item the shares of one group sum to 1. As for
+\code{\link[=st_pvalue]{st_pvalue()}}, there is no measurement component for raw item
+responses, so \code{se_measurement} is 0 and \code{se_total} equals
+\code{se_sampling}.
+}
+\details{
+Cost scales with the number of options: an item with k distinct
+responses costs about k times a single \code{\link[=st_pvalue]{st_pvalue()}} pass.
 }
 \examples{
 d <- data.frame(id = 1:50,

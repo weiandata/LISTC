@@ -390,7 +390,7 @@ jsonlite, yaml, data.table。
   vignette(LISTC-intro)、性能基准脚本(scripts/benchmark.R)
 - v0.3(2026-07-18 实现,待验收):replicate weights 方差引擎
   (fay/brr/jk1/jk2,前缀展开,配置层与 Excel 模板同步);
-  option_dist 的 replicate SE 留待 v0.3.x
+  option_dist 的 SE 当时留待 v0.3.x
 - v0.4(2026-07-18 实现,待验收):plausible values/Rubin 引擎
   (PV#模板展开、first/average 口径、与 replicate 组合)、
   零依赖 lst_to_html() 报告渲染(中文样式+自动解读+方法脚注)、
@@ -401,6 +401,12 @@ jsonlite, yaml, data.table。
   依赖清单)、双语 README、双语非编程人员指南
   (docs/guides/)、scripts/release.R 一键发布流水线;
   由 maintainer 构建 tarball 提交 CRAN
+- v1.0 收尾(2026-07-19):包名 LISTR -> LISTC(CRAN 已有 listr,
+  仅大小写不同者不予接受);补齐 st_option_dist 的抽样 SE ——
+  每个选项占比按其 0/1 指示变量的加权均值计算,从而复用 mean
+  的线性化与 replicate 两条方差路径,不另立公式。至此
+  "每个单元格都带标准误" 对 §5 表中全部 9 个统计量成立
+  (已逐个实测 se_sampling 均为有限值)
 
 ## 12. 已决问题(2026-07-18)
 

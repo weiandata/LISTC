@@ -4,7 +4,7 @@
 
 [![R-CMD-check](https://github.com/weiandata/LISTC/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/weiandata/LISTC/actions/workflows/R-CMD-check.yaml)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0)
-[![覆盖率: 96.1%](https://img.shields.io/badge/coverage-96.1%25-brightgreen.svg)](scripts/coverage.R)
+[![覆盖率: 96.3%](https://img.shields.io/badge/coverage-96.3%25-brightgreen.svg)](scripts/coverage.R)
 
 **[English →](README.md)** ·
 [非编程人员快速上手](docs/guides/quickstart-zh.md) ·
@@ -84,7 +84,7 @@ lst_interpret(tab)           # 规则化中文自动解读
 | PISA/TIMSS 复制设计 | `rep_weights = "W_FSTR"`、`rep_method = "fay"` | BRR/Fay/JK1/JK2 | 同上 |
 | Plausible values | `pv = list(math = "PV#MATH")` | 线性化或复制权重 | Rubin(1987)合并 |
 
-全部公式经测试套件中的蒙特卡洛模拟验证(覆盖率 96.1%,核心引擎
+全部公式经测试套件中的蒙特卡洛模拟验证(覆盖率 96.3%,核心引擎
 文件均 >95%)。一个写进设计的重要结论:EAP + 后验标准差做概率化
 分类本身就是校准的,而 WLE/ML 估计需要 `"latent"` 校正——详见
 [设计文档 §4.1/§6](docs/design-v1.md)。

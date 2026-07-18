@@ -14,6 +14,10 @@ First public release.
 * Statistics: `st_mean()`, `st_sd()`, `st_prop_above()`,
   `st_level_prop()`, `st_quantile()`, `st_count()`/`st_wcount()`, item
   p-values `st_pvalue()` and option distributions `st_option_dist()`.
+* Every statistic reports a sampling standard error in every cell,
+  including `st_option_dist()`: each option share is computed as the
+  weighted mean of its 0/1 indicator, so it reuses the same linearized
+  and replicate-weight variance paths as the other statistics.
 
 ## Variance engines
 

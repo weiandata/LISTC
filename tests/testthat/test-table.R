@@ -129,3 +129,88 @@ test_that("lst_interpret 产生结论文字", {
   txt <- lst_interpret(tab)
   expect_true(any(grepl("最高", txt)))
 })
+
+test_that("st_option_dist 的抽样 SE 等同于 0/1 指示变量的加权均值 SE", {
+  d <- sim_data()
+  x <- make_ld(d)
+  long <- as_long(lst_table(x, rows = region,
+                            values = list(opt = st_option_dist(items = "q1"))))
+  long <- as.data.frame(long)
+
+  # 逐个选项手工构造指示变量,用 st_mean 走同一套线性化方差
+  opt <- as.character(d$q1)
+  opt[is.na(opt)] <- "(缺失)"
+  for (ct in sort(unique(opt))) {
+    d2 <- d
+    d2$ind <- as.numeric(opt == ct)
+    x2 <- lst_data(d2, id = sid, group = region, weight = w, score = ind)
+    ref <- as.data.frame(as_long(
+      lst_table(x2, rows = region, values = list(m = st_mean(ind)))
+    ))
+    got <- long[long$category == paste0("q1:", ct), ]
+    got <- got[order(got$region), ]
+    ref <- ref[order(ref$region), ]
+    expect_equal(got$estimate, ref$estimate, tolerance = 1e-10)
+    expect_equal(got$se_sampling, ref$se_sampling, tolerance = 1e-10)
+  }
+})
+
+test_that("st_option_dist 在复制权重下给出 replicate SE", {
+  d <- sim_data()
+  set.seed(99)
+  for (i in 1:8) d[[paste0("rw", i)]] <- runif(nrow(d), 0.5, 2)
+  rw <- paste0("rw", 1:8)
+  x <- lst_data(d, id = sid, group = region, weight = w, resp = q1,
+                rep_weights = rw, rep_method = "jk1")
+  long <- as.data.frame(as_long(
+    lst_table(x, rows = region, values = list(opt = st_option_dist(items = "q1")))
+  ))
+  expect_true(all(is.finite(long$se_sampling)))
+  expect_true(all(long$se_sampling > 0))
+
+  opt <- as.character(d$q1)
+  opt[is.na(opt)] <- "(缺失)"
+  ct <- sort(unique(opt))[1]
+  d2 <- d
+  d2$ind <- as.numeric(opt == ct)
+  x2 <- lst_data(d2, id = sid, group = region, weight = w, score = ind,
+                 rep_weights = rw, rep_method = "jk1")
+  ref <- as.data.frame(as_long(
+    lst_table(x2, rows = region, values = list(m = st_mean(ind)))
+  ))
+  got <- long[long$category == paste0("q1:", ct), ]
+  expect_equal(got$se_sampling[order(got$region)],
+               ref$se_sampling[order(ref$region)], tolerance = 1e-10)
+})
+
+test_that("st_option_dist 的 SE 分量约定与 st_pvalue 一致", {
+  x <- make_ld()
+  long <- as.data.frame(as_long(
+    lst_table(x, rows = region, values = list(opt = st_option_dist(items = "q1")))
+  ))
+  expect_true(all(long$se_measurement == 0))
+  expect_equal(long$se_total, long$se_sampling, tolerance = 1e-12)
+})
+
+test_that("每个统计量的每个单元格都带抽样 SE(宣传口径回归测试)", {
+  x <- make_ld()
+  brk <- c(低 = -Inf, 中 = -0.5, 高 = 0.8)
+  stats <- list(
+    st_mean = st_mean(math),
+    st_sd = st_sd(math),
+    st_prop_above = st_prop_above(math, cutoff = 0.5, method = "prob"),
+    st_level_prop = st_level_prop(math, breaks = brk, method = "prob"),
+    st_quantile = st_quantile(math, probs = c(0.25, 0.5)),
+    st_count = st_count(),
+    st_wcount = st_wcount(),
+    st_pvalue = st_pvalue(items = "q1"),
+    st_option_dist = st_option_dist(items = "q1")
+  )
+  for (nm in names(stats)) {
+    long <- as_long(lst_table(
+      x, rows = region, values = stats::setNames(list(stats[[nm]]), "v")
+    ))
+    expect_true(all(is.finite(long$se_sampling)),
+                info = paste("se_sampling 非有限值:", nm))
+  }
+})

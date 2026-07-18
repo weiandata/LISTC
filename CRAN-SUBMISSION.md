@@ -7,8 +7,8 @@ Submit at <https://xmpalantir.wu.ac.at/cransubmit/>.
 | Field | Value |
 | --- | --- |
 | File | `LISTC_1.0.0.tar.gz` |
-| Size | 83,686 bytes |
-| SHA-256 | `a9749a8b98a1e7095090a21573749fea43760f81338fbe704446508a5166c929` |
+| Size | 84,480 bytes |
+| SHA-256 | `05f601cc8b738f9f423ff88156b0c1c45326bcbcf6e31dc8582654b83681b6b1` |
 | Built with | R 4.6.0, `R CMD build .` |
 
 ## Step 1 — form fields
@@ -46,7 +46,7 @@ Notes for reviewers:
   sources use \uxxxx escapes; the package Encoding is UTF-8 and the
   Language field is set to zh-CN. All Rd documentation is ASCII-only
   English, so the PDF reference manual builds without CJK LaTeX support.
-* Test coverage is 96.1% overall (core variance/pivot engine files
+* Test coverage is 96.3% overall (core variance/pivot engine files
   > 95%); statistical formulas are additionally validated against Monte
   Carlo simulations in the test suite (marked skip_on_cran where
   long-running).
@@ -62,15 +62,13 @@ Notes for reviewers:
 
 ## Before you submit
 
-1. Rename the GitHub repository `weiandata/LISTR` -> `weiandata/LISTC`
-   and make it public. Until then the three URLs in `DESCRIPTION` and
-   `man/LISTC-package.Rd` return 404 and CRAN's incoming check flags
-   them as possibly invalid.
-2. Check the win-builder results emailed to `makunxiang@weiandata.com`
-   (both R-devel and R-release were submitted).
-3. Confirm the `Repository checks` workflow is green — its only
-   remaining failure is the link check hitting those same two GitHub
-   URLs.
+1. Check the win-builder results emailed to `makunxiang@weiandata.com`
+   (both R-devel and R-release were submitted for this exact artifact).
+2. Confirm both GitHub workflows are green on `main`.
+
+The GitHub repository has been renamed to `weiandata/LISTC` and made
+public, so the URLs in `DESCRIPTION` and `man/LISTC-package.Rd` now
+resolve and the incoming check reports only "New submission".
 
 ## After you submit
 

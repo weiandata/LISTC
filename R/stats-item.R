@@ -25,15 +25,17 @@ st_pvalue <- function(items = NULL) {
 
 #' Weighted item option distribution (including missing rate)
 #'
-#' Unlike the other statistics, this one reports point estimates only:
-#' `se_sampling`, `se_measurement` and `se_total` are `NA` for every
-#' option category, under linearization and under replicate weights
-#' alike. Option distributions are used for item screening rather than
-#' for reported estimates, so no variance estimator is implemented yet.
-#' Note that the table metadata still records the variance engine that
-#' was in effect for the other statistics in the same table. Use
-#' [st_pvalue()], which does carry sampling standard errors, when you
-#' need an item statistic with a standard error.
+#' Each option share is the weighted mean of a 0/1 indicator for that
+#' option, so it carries a sampling standard error from the same engine
+#' as the other statistics: linearized by default, or replicate-based
+#' when `rep_weights` are declared. Missing responses form their own
+#' category, and within an item the shares of one group sum to 1. As for
+#' [st_pvalue()], there is no measurement component for raw item
+#' responses, so `se_measurement` is 0 and `se_total` equals
+#' `se_sampling`.
+#'
+#' Cost scales with the number of options: an item with k distinct
+#' responses costs about k times a single [st_pvalue()] pass.
 #'
 #' @param items Character vector of item (resp) columns; `NULL` means all
 #'   declared resp columns.

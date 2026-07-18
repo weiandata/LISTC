@@ -28,7 +28,7 @@ New submission
   R sources use \uxxxx escapes; the package Encoding is UTF-8 and the
   Language field is set to zh-CN. All Rd documentation is ASCII-only
   English, so the PDF reference manual builds without CJK LaTeX support.
-* Test coverage is 96.1% overall (core variance/pivot engine files
+* Test coverage is 96.3% overall (core variance/pivot engine files
   > 95%); statistical formulas are additionally validated against Monte
   Carlo simulations in the test suite (marked skip_on_cran where
   long-running).

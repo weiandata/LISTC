@@ -294,29 +294,19 @@ compute_item_stat <- function(x, dt, spec, sets, grp_vars, repw = NULL) {
       res <- compute_grouped(tmp, inner, sets, grp_vars, ".lstx", NULL, repw)
       res[, category := it]
     } else { # option_dist
+      # 每个选项占比 = 该选项 0/1 指示变量的加权均值,因此直接复用 mean 的
+      # 方差机制(线性化与 replicate 两条路径都跟着复用),不另立公式。
       tmp <- dt[, base_cols, with = FALSE]
       opt <- as.character(dt[[it]])
       opt[is.na(opt)] <- spec$params$missing_as
-      tmp[, .lstopt := opt]
-      res_list <- list()
-      for (s in seq_along(sets)) {
-        by <- sets[[s]]
-        agg <- tmp[, list(sum_w_opt = sum(.lstw), n_opt = .N),
-                   by = c(by, ".lstopt")]
-        if (length(by) > 0) {
-          agg[, `:=`(sum_w = sum(sum_w_opt), n = sum(n_opt)), by = by]
-        } else {
-          agg[, `:=`(sum_w = sum(sum_w_opt), n = sum(n_opt))]
-        }
-        agg[, `:=`(
-          estimate = sum_w_opt / sum_w,
-          se_sampling = NA_real_, se_measurement = NA_real_,
-          se_total = NA_real_
-        )]
-        agg[, category := paste0(it, ":", .lstopt)]
-        agg[, c(".lstopt", "sum_w_opt", "n_opt") := NULL]
-        for (mv in setdiff(grp_vars, by)) agg[, (mv) := TOTAL_LABEL]
-        res_list[[s]] <- agg
+      cats <- sort(unique(opt))
+      inner <- new_stat("mean")
+      res_list <- vector("list", length(cats))
+      for (k in seq_along(cats)) {
+        tmp[, .lstx := as.numeric(opt == cats[k])]
+        r <- compute_grouped(tmp, inner, sets, grp_vars, ".lstx", NULL, repw)
+        r[, category := paste0(it, ":", cats[k])]
+        res_list[[k]] <- r
       }
       res <- data.table::rbindlist(res_list, use.names = TRUE, fill = TRUE)
     }

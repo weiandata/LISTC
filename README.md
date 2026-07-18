@@ -5,7 +5,7 @@
 
 [![R-CMD-check](https://github.com/weiandata/LISTC/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/weiandata/LISTC/actions/workflows/R-CMD-check.yaml)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0)
-[![coverage: 96.1%](https://img.shields.io/badge/coverage-96.1%25-brightgreen.svg)](scripts/coverage.R)
+[![coverage: 96.3%](https://img.shields.io/badge/coverage-96.3%25-brightgreen.svg)](scripts/coverage.R)
 
 **[中文文档 →](README.zh-CN.md)** ·
 [Quick start for non-programmers](docs/guides/quickstart-en.md) ·
@@ -90,7 +90,7 @@ components (`se_sampling`, `se_measurement`, `se_total`).
 | Plausible values | `pv = list(math = "PV#MATH")` | linearized or replicate | Rubin (1987) combination |
 
 All formulas are validated against Monte Carlo simulations in the test
-suite (96.1% coverage; core engine files > 95%). A notable result baked
+suite (96.3% coverage; core engine files > 95%). A notable result baked
 into the design: for EAP estimates with posterior SDs, probabilistic
 classification is already calibrated — while WLE/ML estimates need the
 `"latent"` empirical-Bayes correction. See
