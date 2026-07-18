@@ -31,6 +31,24 @@ lst_run <- function(config, quiet = FALSE) {
     if (needs_items) unlist(r$resp), used_vars
   ))
 
+  # \u590d\u5236\u6743\u91cd:\u663e\u5f0f\u5217\u540d\u76f4\u63a5\u52a0\u5165;\u524d\u7f00\u5219\u5148\u7aa5\u89c6\u8868\u5934\u5c55\u5f00(csv/tsv),
+  # \u5176\u4ed6\u683c\u5f0f\u9000\u56de\u8bfb\u53d6\u5168\u90e8\u5217
+  rep_spec <- unlist(r$rep_weights)
+  if (!is.null(rep_spec)) {
+    if (length(rep_spec) > 1) {
+      cols <- unique(c(cols, rep_spec))
+    } else {
+      ext <- tolower(tools::file_ext(cfg$data))
+      if (ext %in% c("csv", "tsv", "txt")) {
+        hdr <- names(data.table::fread(cfg$data, nrows = 0))
+        hits <- grep(paste0("^", rep_spec, "[0-9]+$"), hdr, value = TRUE)
+        cols <- unique(c(cols, if (length(hits) > 0) hits else rep_spec))
+      } else {
+        cols <- NULL # \u65e0\u6cd5\u4fbf\u5b9c\u5730\u7aa5\u89c6\u8868\u5934,\u8bfb\u5168\u90e8\u5217
+      }
+    }
+  }
+
   say("\u8bfb\u53d6\u6570\u636e: ", cfg$data)
   data <- read_listr(cfg$data, col_select = cols)
   say("\u8bfb\u5165 ", nrow(data), " \u884c x ", ncol(data), " \u5217")
@@ -42,11 +60,15 @@ lst_run <- function(config, quiet = FALSE) {
   roles_theta <- unlist(r$theta)
   roles_theta_se <- unlist(r$theta_se)
   roles_resp <- unlist(r$resp)
+  roles_repw <- unlist(r$rep_weights)
   x <- lst_data(
     data,
     id = roles_id, group = roles_group, weight = roles_weight,
     score = roles_score, theta = roles_theta, theta_se = roles_theta_se,
-    resp = roles_resp, key = r$key
+    resp = roles_resp, key = r$key,
+    rep_weights = roles_repw,
+    rep_method = r$rep_method,
+    fay_k = r$fay_k %||% 0.5
   )
 
   tables <- list()

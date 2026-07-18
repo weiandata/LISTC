@@ -13,7 +13,10 @@ lst_data(
   theta = NULL,
   theta_se = NULL,
   resp = NULL,
-  key = NULL
+  key = NULL,
+  rep_weights = NULL,
+  rep_method = NULL,
+  fay_k = 0.5
 )
 }
 \arguments{
@@ -35,6 +38,16 @@ lst_data(
 
 \item{key}{Optional scoring key for \code{resp} (named vector: item -> correct
 answer), required for \code{\link[=st_pvalue]{st_pvalue()}}.}
+
+\item{rep_weights}{Replicate weight columns (v0.3): a character vector
+of column names, bare names, or a single prefix string such as
+\code{"W_FSTR"} which expands to \code{W_FSTR1..R} (PISA style). When set,
+sampling variance switches to the replicate-weights engine.}
+
+\item{rep_method}{Replicate method: \code{"fay"} (PISA BRR-Fay),
+\code{"brr"}, \code{"jk1"}, or \code{"jk2"} (TIMSS). Required with \code{rep_weights}.}
+
+\item{fay_k}{Fay factor for \code{rep_method = "fay"} (default 0.5).}
 }
 \value{
 A \code{listr_data} object.

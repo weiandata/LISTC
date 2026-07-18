@@ -39,6 +39,17 @@ lst_table <- function(x, rows = NULL, cols = NULL, values,
     dt[, (grp_vars) := lapply(.SD, as.character), .SDcols = grp_vars]
   }
 
+  # replicate weights 引擎(v0.3):抽样方差改用复制权重法
+  repw <- NULL
+  if (!is.null(x$roles$rep_weights)) {
+    repw <- list(
+      cols = x$roles$rep_weights,
+      factor = rep_factor(x$rep_method, length(x$roles$rep_weights),
+                          x$fay_k %||% 0.5),
+      method = x$rep_method
+    )
+  }
+
   # grouping sets: 主体 + margins
   sets <- list(grp_vars)
   if (margins && length(grp_vars) > 0) {
@@ -54,16 +65,26 @@ lst_table <- function(x, rows = NULL, cols = NULL, values,
     nm <- names(values)[i]
     spec <- values[[i]]
     if (spec$type %in% c("pvalue", "option_dist")) {
-      res <- compute_item_stat(x, dt, spec, sets, grp_vars)
-      meta[[nm]] <- list(type = spec$type, is_prop = TRUE)
+      res <- compute_item_stat(x, dt, spec, sets, grp_vars, repw)
+      meta[[nm]] <- list(type = spec$type, is_prop = TRUE,
+                         variance = if (is.null(repw)) {
+                           "linearized"
+                         } else {
+                           paste0("replicate:", repw$method)
+                         })
     } else {
       prep <- prepare_measure(x, dt, spec)
       res <- compute_grouped(prep$dt, spec, sets, grp_vars,
-                             prep$xcol, prep$secol)
+                             prep$xcol, prep$secol, repw)
       meta[[nm]] <- list(
         type = spec$type, var = prep$var, is_prop = spec$is_prop,
         method = spec$params$method, correction = spec$params$correction,
-        rho = prep$rho
+        rho = prep$rho,
+        variance = if (is.null(repw)) {
+          "linearized"
+        } else {
+          paste0("replicate:", repw$method)
+        }
       )
     }
     res[, statistic := nm]
@@ -125,13 +146,44 @@ resolve_stat_var <- function(quo, x) {
 }
 
 # data.table 分组计算 + margins 组合
-compute_grouped <- function(dt, spec, sets, grp_vars, xcol, secol) {
-  keep <- c(xcol, secol, ".lstw")
+# rep 非 NULL 时走 replicate weights 路径(v0.3):
+# list(cols = 复制权重列, factor = 方差因子, method = 方法名)
+compute_grouped <- function(dt, spec, sets, grp_vars, xcol, secol,
+                            repw = NULL) {
+  keep <- c(xcol, secol, ".lstw", repw$cols)
   sub <- dt[stats::complete.cases(dt[, keep, with = FALSE])]
+  wcols <- c(".lstw", repw$cols)
   out <- vector("list", length(sets))
   for (s in seq_along(sets)) {
     by <- sets[[s]]
-    res <- if (is.null(xcol)) {
+    res <- if (!is.null(repw)) {
+      xx <- if (is.null(xcol)) NULL else xcol
+      if (length(by) > 0) {
+        if (is.null(xx)) {
+          sub[, compute_stat_rep(spec, rep(0, .N), .SD, NULL, repw$factor),
+              by = by, .SDcols = wcols]
+        } else if (is.null(secol)) {
+          sub[, compute_stat_rep(spec, get(xx), .SD, NULL, repw$factor),
+              by = by, .SDcols = wcols]
+        } else {
+          sub[, compute_stat_rep(spec, get(xx), .SD, get(secol),
+                                 repw$factor),
+              by = by, .SDcols = wcols]
+        }
+      } else {
+        if (is.null(xx)) {
+          sub[, compute_stat_rep(spec, rep(0, .N), .SD, NULL, repw$factor),
+              .SDcols = wcols]
+        } else if (is.null(secol)) {
+          sub[, compute_stat_rep(spec, get(xx), .SD, NULL, repw$factor),
+              .SDcols = wcols]
+        } else {
+          sub[, compute_stat_rep(spec, get(xx), .SD, get(secol),
+                                 repw$factor),
+              .SDcols = wcols]
+        }
+      }
+    } else if (is.null(xcol)) {
       if (length(by) > 0) {
         sub[, compute_stat(spec, rep(0, .N), .lstw), by = by]
       } else {
@@ -161,20 +213,20 @@ compute_grouped <- function(dt, spec, sets, grp_vars, xcol, secol) {
 }
 
 # 题目层统计:按题分块,峰值内存与题数解耦(design doc 9.1)
-compute_item_stat <- function(x, dt, spec, sets, grp_vars) {
+compute_item_stat <- function(x, dt, spec, sets, grp_vars, repw = NULL) {
   items <- spec$params$items %||% unname(x$roles$resp)
   if (is.null(items)) {
     rlang::abort("\u672a\u58f0\u660e resp \u4f5c\u7b54\u5217,\u65e0\u6cd5\u8ba1\u7b97\u9898\u76ee\u5c42\u7edf\u8ba1\u3002")
   }
   key <- x$key
   parts <- list()
-  base_cols <- c(grp_vars, ".lstw")
+  base_cols <- c(grp_vars, ".lstw", repw$cols)
   for (it in items) {
     if (spec$type == "pvalue") {
       tmp <- dt[, base_cols, with = FALSE]
       tmp[, .lstx := score_item(dt[[it]], key[[it]])]
       inner <- new_stat("mean")
-      res <- compute_grouped(tmp, inner, sets, grp_vars, ".lstx", NULL)
+      res <- compute_grouped(tmp, inner, sets, grp_vars, ".lstx", NULL, repw)
       res[, category := it]
     } else { # option_dist
       tmp <- dt[, base_cols, with = FALSE]

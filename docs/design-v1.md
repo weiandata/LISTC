@@ -205,6 +205,24 @@ SE = √(Var_samp + Var_meas)。结果中三个分量
 replicate weights(BRR/JK)引擎,v3 增加 PV/Rubin 引擎,
 统计量代码不变。
 
+### 6.1 replicate weights 引擎(v0.3,2026-07-18 实现)
+
+在 `lst_data()` 声明 `rep_weights`(列名向量或前缀如
+`"W_FSTR"`,自动展开为 W_FSTR1..R)与 `rep_method` 后,
+抽样方差自动切换为:
+
+Var_samp = c · Σ_r (θ̂⁽ʳ⁾ − θ̂)²
+
+因子 c 按方法:fay = 1/(R(1−k)²)(PISA,k=0.5)、
+brr = 1/R、jk1 = (R−1)/R、jk2 = 1(TIMSS)。测量方差分量
+(个体 SE 传递)照旧独立相加,两套机制正交。全部 st_*
+统计量(含题目正答率、分位数)统一走该路径;结果的
+meta 记录 `variance = "replicate:<method>"`。
+
+蒙特卡洛验证(50 群 × 20 人,ICC 型数据,test-rep-weights.R):
+经验 SE 0.0722,JK1 引擎 0.0702(比值 0.97),线性化公式
+0.0339——整群设计效应约 4 倍,验证了引擎的必要性与正确性。
+
 ## 7. 透视层
 
 核心 API,一次调用产出透视表:
@@ -339,7 +357,9 @@ jsonlite, yaml, data.table。
   (lst_config_template + xlsx 解析)、Winsteps/ConQuest 解析器、
   分位数 Woodruff SE、lst_interpret 等级/题目规则、
   vignette(LISTR-intro)、性能基准脚本(scripts/benchmark.R)
-- v0.3:replicate weights 方差引擎
+- v0.3(2026-07-18 实现,待验收):replicate weights 方差引擎
+  (fay/brr/jk1/jk2,前缀展开,配置层与 Excel 模板同步);
+  option_dist 的 replicate SE 留待 v0.3.x
 - v0.4:plausible values(Rubin 合并)引擎、HTML 渲染
 - v1.0:CRAN 提交
 

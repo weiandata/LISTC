@@ -61,6 +61,17 @@ correction: use "none" when theta is an EAP estimate with posterior SD
 sampling SE (empirical-Bayes shrinkage to the latent distribution;
 supply rho or let LISTR estimate reliability from the data).
 
+## Replicate weights (v0.3)
+
+For PISA/TIMSS-style cluster samples, declare replicate weights and the
+sampling variance switches to the replicate engine (measurement variance
+from individual SEs is still added on top):
+
+    roles:
+      rep_weights: W_FSTR     # prefix -> W_FSTR1..80, or explicit array
+      rep_method: fay         # fay (PISA) | brr | jk1 | jk2 (TIMSS)
+      fay_k: 0.5              # fay only, default 0.5
+
 ## Cautions
 
 - theta and theta_se must be paired per dimension.

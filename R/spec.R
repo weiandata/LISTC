@@ -15,11 +15,19 @@
 #' @param resp Item response columns.
 #' @param key Optional scoring key for `resp` (named vector: item -> correct
 #'   answer), required for [st_pvalue()].
+#' @param rep_weights Replicate weight columns (v0.3): a character vector
+#'   of column names, bare names, or a single prefix string such as
+#'   `"W_FSTR"` which expands to `W_FSTR1..R` (PISA style). When set,
+#'   sampling variance switches to the replicate-weights engine.
+#' @param rep_method Replicate method: `"fay"` (PISA BRR-Fay),
+#'   `"brr"`, `"jk1"`, or `"jk2"` (TIMSS). Required with `rep_weights`.
+#' @param fay_k Fay factor for `rep_method = "fay"` (default 0.5).
 #' @return A `listr_data` object.
 #' @export
 lst_data <- function(data, id = NULL, group = NULL, weight = NULL,
                      score = NULL, theta = NULL, theta_se = NULL,
-                     resp = NULL, key = NULL) {
+                     resp = NULL, key = NULL,
+                     rep_weights = NULL, rep_method = NULL, fay_k = 0.5) {
   if (!is.data.frame(data)) {
     rlang::abort("data \u5fc5\u987b\u662f data.frame\u3002")
   }
@@ -30,7 +38,8 @@ lst_data <- function(data, id = NULL, group = NULL, weight = NULL,
     score    = resolve_vars(rlang::enquo(score), data, "score"),
     theta    = resolve_vars(rlang::enquo(theta), data, "theta"),
     theta_se = resolve_vars(rlang::enquo(theta_se), data, "theta_se"),
-    resp     = resolve_vars(rlang::enquo(resp), data, "resp")
+    resp     = resolve_vars(rlang::enquo(resp), data, "resp"),
+    rep_weights = resolve_rep_weights(rlang::enquo(rep_weights), data)
   )
   # theta 维度命名:未命名时用列名本身
   for (r in c("theta", "theta_se", "score")) {
@@ -43,10 +52,45 @@ lst_data <- function(data, id = NULL, group = NULL, weight = NULL,
     }
   }
   x <- structure(
-    list(data = data, roles = roles, key = key),
+    list(data = data, roles = roles, key = key,
+         rep_method = rep_method, fay_k = fay_k),
     class = "listr_data"
   )
   lst_validate(x)
+}
+
+# rep_weights:列名向量、裸名或前缀字符串(展开为 前缀1..R)
+resolve_rep_weights <- function(quo, data) {
+  if (rlang::quo_is_null(quo)) {
+    return(NULL)
+  }
+  v <- tryCatch(
+    rlang::eval_tidy(quo, data = col_env(data)),
+    error = function(e) rlang::eval_tidy(quo)
+  )
+  if (is.null(v)) {
+    return(NULL)
+  }
+  v <- as.character(v)
+  if (length(v) == 1 && !v %in% names(data)) {
+    hits <- grep(paste0("^", v, "[0-9]+$"), names(data), value = TRUE)
+    if (length(hits) == 0) {
+      rlang::abort(paste0(
+        "rep_weights = \"", v, "\" \u65e2\u4e0d\u662f\u5217\u540d,\u4e5f\u5339\u914d\u4e0d\u5230 \"", v,
+        "1\", \"", v, "2\" ... \u8fd9\u6837\u7684\u524d\u7f00\u5217\u3002"
+      ))
+    }
+    # 按数字序排列
+    v <- hits[order(as.integer(sub(paste0("^", v), "", hits)))]
+  }
+  missing <- setdiff(v, names(data))
+  if (length(missing) > 0) {
+    rlang::abort(paste0(
+      "rep_weights \u4e2d\u7684\u5217\u5728\u6570\u636e\u91cc\u4e0d\u5b58\u5728: ",
+      paste(missing, collapse = ", ")
+    ))
+  }
+  v
 }
 
 #' Validate a listr_data object
@@ -93,6 +137,24 @@ lst_validate <- function(x) {
   }
   if (!is.null(x$key) && is.null(r$resp)) {
     rlang::abort("\u63d0\u4f9b\u4e86\u8ba1\u5206\u952e key \u4f46\u672a\u58f0\u660e resp \u4f5c\u7b54\u5217\u3002")
+  }
+  if (!is.null(r$rep_weights)) {
+    if (is.null(x$rep_method)) {
+      rlang::abort(paste0(
+        "\u58f0\u660e\u4e86 rep_weights \u5fc5\u987b\u540c\u65f6\u6307\u5b9a rep_method",
+        "(fay/brr/jk1/jk2;PISA \u7528 fay,TIMSS \u7528 jk2)\u3002"
+      ))
+    }
+    x$rep_method <- match.arg(x$rep_method, REP_METHODS)
+    for (rc in r$rep_weights) {
+      if (!is.numeric(d[[rc]])) {
+        rlang::abort(paste0("\u590d\u5236\u6743\u91cd\u5217 ", rc, " \u5fc5\u987b\u662f\u6570\u503c\u3002"))
+      }
+    }
+    if (!is.null(x$fay_k) &&
+        (!is.numeric(x$fay_k) || x$fay_k <= 0 || x$fay_k >= 1)) {
+      rlang::abort("fay_k \u5fc5\u987b\u5728 (0, 1) \u533a\u95f4\u5185,PISA \u60ef\u4f8b\u4e3a 0.5\u3002")
+    }
   }
   invisible(x)
 }

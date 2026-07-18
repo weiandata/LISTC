@@ -32,6 +32,12 @@ lst_config <- function(config) {
          paste0("roles \u91cc\u7684 theta \u4e0e theta_se \u5fc5\u987b\u4f7f\u7528\u76f8\u540c\u7684\u7ef4\u5ea6\u540d,",
                 "\u4f8b\u5982 theta: {math: th_math} \u914d theta_se: {math: se_math}\u3002"))
   }
+  if (!is.null(cfg$roles$rep_weights)) {
+    need(!is.null(cfg$roles$rep_method) &&
+           cfg$roles$rep_method %in% c("fay", "brr", "jk1", "jk2"),
+         paste0("\u4f7f\u7528\u590d\u5236\u6743\u91cd(rep_weights)\u5fc5\u987b\u540c\u65f6\u586b\u5199 rep_method,",
+                "\u53ef\u9009: fay(PISA)\u3001brr\u3001jk1\u3001jk2(TIMSS)\u3002"))
+  }
   need(is.list(cfg$tables) && length(cfg$tables) > 0,
        "\u914d\u7f6e\u7f3a\u5c11 tables:\u8bf7\u81f3\u5c11\u5b9a\u4e49\u4e00\u5f20\u7edf\u8ba1\u8868\u3002")
   for (i in seq_along(cfg$tables)) {

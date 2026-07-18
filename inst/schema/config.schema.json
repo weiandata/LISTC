@@ -20,7 +20,16 @@
         "theta": { "type": "object", "additionalProperties": { "type": "string" } },
         "theta_se": { "type": "object", "additionalProperties": { "type": "string" } },
         "resp": { "type": "array", "items": { "type": "string" } },
-        "key": { "type": "object", "additionalProperties": true }
+        "key": { "type": "object", "additionalProperties": true },
+        "rep_weights": {
+          "description": "Replicate weight columns: array of names, or a single prefix string like W_FSTR (expands to W_FSTR1..R)",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "rep_method": { "enum": ["fay", "brr", "jk1", "jk2"] },
+        "fay_k": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 }
       }
     },
     "tables": {

@@ -51,6 +51,15 @@ parse_config_xlsx <- function(path) {
     group = split_csv(get_kv(base, "\u5206\u7ec4\u5217")),
     score = split_csv(get_kv(base, "\u5f97\u5206\u5217"))
   )
+  # \u590d\u5236\u6743\u91cd(v0.3,\u53ef\u9009):\u524d\u7f00\u6216\u9017\u53f7\u5206\u9694\u5217\u540d
+  repw <- get_kv(base, "\u590d\u5236\u6743\u91cd\u5217")
+  if (!is.null(repw)) {
+    repw_v <- split_csv(repw)
+    roles$rep_weights <- if (length(repw_v) == 1) repw_v else as.list(repw_v)
+    roles$rep_method <- get_kv(base, "\u590d\u5236\u6743\u91cd\u65b9\u6cd5")
+    fayk <- get_kv(base, "Fay\u7cfb\u6570")
+    if (!is.null(fayk)) roles$fay_k <- as.numeric(fayk)
+  }
   cfg <- list(data = get_kv(base, "\u6570\u636e\u6587\u4ef6"), roles = roles)
 
   dims <- need_sheet("\u80fd\u529b\u7ef4\u5ea6")

@@ -9,6 +9,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- v0.3: replicate-weights variance engine (`rep_weights` prefix or
+  column list, `rep_method` fay/brr/jk1/jk2, `fay_k`) applied uniformly
+  to all statistics with the measurement-variance component still added
+  on top; wired through `lst_table()`, YAML/JSON config, JSON Schema and
+  the Excel configuration template; Monte Carlo cluster-sampling test
+  shows JK1 recovers the design effect that the linearized formula
+  underestimates.
+
 - v0.2 features: Excel configuration workbook (`lst_config_template()`,
   xlsx parsing in `lst_config()`/`lst_run()`, bundled bilingual template
   with instructions), Winsteps PFILE and ConQuest person-file readers
