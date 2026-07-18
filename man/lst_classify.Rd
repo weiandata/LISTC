@@ -7,12 +7,12 @@
 lst_classify(x, var, breaks, labels = NULL, name = NULL)
 }
 \arguments{
-\item{x}{A \code{listr_data} object.}
+\item{x}{A \code{listc_data} object.}
 
 \item{var}{Measure: theta/score dimension name or numeric column.}
 
 \item{breaks}{Named numeric vector: level name -> lower bound,
-e.g. \code{c(不及格 = -Inf, 及格 = 0.5, 优秀 = 1.2)}.}
+e.g. \code{c(fail = -Inf, pass = 0.5, excellent = 1.2)}.}
 
 \item{labels}{Optional level labels (defaults to names of \code{breaks}).}
 

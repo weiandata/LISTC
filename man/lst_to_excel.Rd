@@ -2,12 +2,12 @@
 % Please edit documentation in R/export-excel.R
 \name{lst_to_excel}
 \alias{lst_to_excel}
-\title{Export listr_table(s) to a formatted Excel workbook}
+\title{Export listc_table(s) to a formatted Excel workbook}
 \usage{
 lst_to_excel(tab, path, style = NULL, overwrite = FALSE, interpret = TRUE)
 }
 \arguments{
-\item{tab}{A \code{listr_table} or named list of them (names become sheets).}
+\item{tab}{A \code{listc_table} or named list of them (names become sheets).}
 
 \item{path}{Output .xlsx path.}
 
@@ -24,7 +24,8 @@ lst_to_excel(tab, path, style = NULL, overwrite = FALSE, interpret = TRUE)
 \description{
 Chinese-friendly defaults: DengXian base font and column widths
 estimated from full-width character counts; override via \code{style}.
-A final "结论" sheet carries the rule-based interpretation.
+A final interpretation sheet (titled "conclusions" in Chinese) carries
+the rule-based interpretation.
 }
 \examples{
 d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),

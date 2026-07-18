@@ -4,10 +4,11 @@
 \alias{lst_config_template}
 \title{Copy the Excel configuration template to a writable location}
 \usage{
-lst_config_template(path = "LISTR配置.xlsx", overwrite = FALSE)
+lst_config_template(path = NULL, overwrite = FALSE)
 }
 \arguments{
-\item{path}{Target path for the template workbook.}
+\item{path}{Target path for the template workbook; \code{NULL} uses a
+built-in default file name (Chinese, ending in ".xlsx").}
 
 \item{overwrite}{Overwrite an existing file.}
 }
@@ -18,7 +19,7 @@ lst_config_template(path = "LISTR配置.xlsx", overwrite = FALSE)
 Copy the Excel configuration template to a writable location
 }
 \examples{
-f <- file.path(tempdir(), "listr-config.xlsx")
+f <- file.path(tempdir(), "listc-config.xlsx")
 lst_config_template(f, overwrite = TRUE)
 file.exists(f)
 }

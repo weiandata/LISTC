@@ -31,8 +31,8 @@ test_that("lst_to_excel:多表、样式覆盖、interpret 开关", {
 })
 
 test_that("normalize_tabs 的输入校验与自动命名", {
-  expect_error(lst_to_excel(list(1, 2), tempfile()), "listr_table")
-  expect_error(lst_to_excel("x", tempfile()), "listr_table")
+  expect_error(lst_to_excel(list(1, 2), tempfile()), "listc_table")
+  expect_error(lst_to_excel("x", tempfile()), "listc_table")
   tabs <- list(mk_tab(), mk_tab(seed = 53)) # 未命名列表
   f <- tempfile(fileext = ".xlsx")
   lst_to_excel(tabs, f, overwrite = TRUE)
@@ -43,7 +43,7 @@ test_that("lst_to_json:字符串返回与写盘、元数据完整", {
   tab <- mk_tab()
   js <- lst_to_json(tab, pretty = FALSE)
   parsed <- jsonlite::fromJSON(js)
-  expect_equal(parsed$package, "LISTR")
+  expect_equal(parsed$package, "LISTC")
   expect_equal(parsed$tables$name, "结果")
   f <- tempfile(fileext = ".json")
   lst_to_json(tab, f)
@@ -81,7 +81,7 @@ test_that("lst_interpret 分支:不显著、空规则、小样本", {
   expect_true(any(grepl("不足 30", lst_interpret(tab_small))))
 })
 
-test_that("print 方法:listr_data 与 listr_table", {
+test_that("print 方法:listc_data 与 listc_table", {
   set.seed(55)
   d <- data.frame(sid = 1:50, region = "甲", w = 1, th = rnorm(50),
                   se = runif(50, .2, .4), q1 = rbinom(50, 1, .5),
@@ -90,12 +90,12 @@ test_that("print 方法:listr_data 与 listr_table", {
                 theta = c(math = th), theta_se = c(math = se),
                 score = raw, resp = q1, key = list(q1 = 1))
   out <- capture.output(print(x))
-  expect_true(any(grepl("listr_data", out)))
+  expect_true(any(grepl("listc_data", out)))
   expect_true(any(grepl("math=th", out)))
   expect_true(any(grepl("题目列", out)))
   tab <- lst_table(x, rows = region, values = list(m = st_mean(math)))
   out2 <- capture.output(print(tab))
-  expect_true(any(grepl("listr_table", out2)))
+  expect_true(any(grepl("listc_table", out2)))
 })
 
 test_that("as_wide 形态:无行变量、est/est_ci/percent 格式、命名 digits", {

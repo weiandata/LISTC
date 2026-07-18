@@ -7,7 +7,7 @@
 lst_above(x, var, cutoff, name = NULL)
 }
 \arguments{
-\item{x}{A \code{listr_data} object.}
+\item{x}{A \code{listc_data} object.}
 
 \item{var}{Measure: theta/score dimension name or numeric column.}
 

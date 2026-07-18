@@ -43,14 +43,14 @@ test_that("Excel 配置簿端到端解析并运行", {
   write_config_workbook(xlsx, csv)
 
   cfg <- lst_config(xlsx)
-  expect_s3_class(cfg, "listr_config")
+  expect_s3_class(cfg, "listc_config")
   expect_equal(cfg$roles$theta$math, "th")
   expect_equal(cfg$tables[[1]]$values$等级$breaks,
                c(低 = -Inf, 中 = 0, 高 = 1))
   expect_true(cfg$tables[[1]]$margins)
 
   res <- lst_run(xlsx, quiet = TRUE)
-  expect_s3_class(res$tables$t1, "listr_table")
+  expect_s3_class(res$tables$t1, "listc_table")
   long <- as_long(res$tables$t1)
   expect_true("合计" %in% long$region)
 })
@@ -77,7 +77,7 @@ test_that("st_quantile 的 Woodruff SE 接近蒙特卡洛", {
   x <- rnorm(n)
   r <- compute_stat(
     structure(list(type = "quantile", var_quo = NULL, is_prop = FALSE,
-                   params = list(probs = 0.5)), class = "listr_stat"),
+                   params = list(probs = 0.5)), class = "listc_stat"),
     x, rep(1, n)
   )
   ratio <- r$se_sampling / stats::sd(meds)

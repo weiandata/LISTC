@@ -2,7 +2,7 @@
 % Please edit documentation in R/run.R
 \name{lst_run}
 \alias{lst_run}
-\title{One-shot entry point: run a full LISTR analysis from a configuration}
+\title{One-shot entry point: run a full LISTC analysis from a configuration}
 \usage{
 lst_run(config, quiet = FALSE)
 }
@@ -12,7 +12,7 @@ lst_run(config, quiet = FALSE)
 \item{quiet}{Suppress progress messages.}
 }
 \value{
-Invisibly, \verb{list(tables = <named listr_table list>, log = <list>)}.
+Invisibly, \verb{list(tables = <named listc_table list>, log = <list>)}.
 }
 \description{
 Reads the config, imports only the needed columns, applies roles,

@@ -3,10 +3,10 @@
 #' Boundary convention: reaching a cut score places the person in the
 #' higher level (`x >= lower & x < upper`).
 #'
-#' @param x A `listr_data` object.
+#' @param x A `listc_data` object.
 #' @param var Measure: theta/score dimension name or numeric column.
 #' @param breaks Named numeric vector: level name -> lower bound,
-#'   e.g. `c(不及格 = -Inf, 及格 = 0.5, 优秀 = 1.2)`.
+#'   e.g. `c(fail = -Inf, pass = 0.5, excellent = 1.2)`.
 #' @param labels Optional level labels (defaults to names of `breaks`).
 #' @param name Name of the new column (default `<var>_level`).
 #' @return `x` with an ordered-factor level column added.
@@ -20,7 +20,7 @@
 #' table(x$data$math_level)
 #' @export
 lst_classify <- function(x, var, breaks, labels = NULL, name = NULL) {
-  stopifnot(inherits(x, "listr_data"))
+  stopifnot(inherits(x, "listc_data"))
   var <- resolve_stat_var(rlang::enquo(var), x)
   m <- resolve_measure(x, var)
   if (is.null(names(breaks)) || any(names(breaks) == "")) {
@@ -52,7 +52,7 @@ lst_classify <- function(x, var, breaks, labels = NULL, name = NULL) {
 #' mean(x$data$math_above)
 #' @export
 lst_above <- function(x, var, cutoff, name = NULL) {
-  stopifnot(inherits(x, "listr_data"))
+  stopifnot(inherits(x, "listc_data"))
   var <- resolve_stat_var(rlang::enquo(var), x)
   m <- resolve_measure(x, var)
   name <- name %||% paste0(var, "_above")
@@ -62,7 +62,7 @@ lst_above <- function(x, var, cutoff, name = NULL) {
 
 #' Add arbitrary derived variables (mutate-style)
 #'
-#' @param x A `listr_data` object.
+#' @param x A `listc_data` object.
 #' @param ... Name-value expressions evaluated in the data.
 #' @return `x` with derived columns added.
 #' @examples
@@ -72,7 +72,7 @@ lst_above <- function(x, var, cutoff, name = NULL) {
 #' x$data$total
 #' @export
 lst_derive <- function(x, ...) {
-  stopifnot(inherits(x, "listr_data"))
+  stopifnot(inherits(x, "listc_data"))
   exprs <- rlang::enquos(...)
   if (is.null(names(exprs)) || any(names(exprs) == "")) {
     rlang::abort("lst_derive \u7684\u6bcf\u4e2a\u8868\u8fbe\u5f0f\u90fd\u5fc5\u987b\u547d\u540d,\u5982 \u603b\u5206 = a + b\u3002")

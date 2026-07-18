@@ -20,7 +20,7 @@ res <- covr::coverage_to_list(cov)
 total <- res$totalcoverage
 files <- res$filecoverage
 
-cat(sprintf("\n== LISTR coverage ==\n总体: %.1f%% (要求 > %d%%)\n\n",
+cat(sprintf("\n== LISTC coverage ==\n总体: %.1f%% (要求 > %d%%)\n\n",
             total, threshold_total))
 df <- data.frame(
   file = names(files),

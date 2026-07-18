@@ -2,10 +2,10 @@
 # 运行: Rscript scripts/realdata-run.R
 # 输出: realdata/output/ 下的 xlsx/json/html + 控制台耗时
 
-if (!requireNamespace("LISTR", quietly = TRUE)) {
+if (!requireNamespace("LISTC", quietly = TRUE)) {
   suppressPackageStartupMessages(devtools::load_all(".", quiet = TRUE))
 } else {
-  suppressPackageStartupMessages(library(LISTR))
+  suppressPackageStartupMessages(library(LISTC))
 }
 
 rd <- "realdata"
@@ -28,7 +28,7 @@ if (!grepl("\\.sav$", sav)) {
 
 t0 <- Sys.time()
 message("读取: ", sav)
-d <- read_listr(sav, col_select = c(
+d <- read_listc(sav, col_select = c(
   "ID", "WEIGHT", "SCORE", "LEVEL", "PROVINCE", "CITY", "AREA",
   "SCHOOLTYPE", "GENDER", "IMPORTANT",
   "IMAGINATIONANDCOURIOUS", "IMAGINATION", "COURIOUS"

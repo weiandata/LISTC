@@ -2,12 +2,12 @@
 % Please edit documentation in R/read-irt.R
 \name{lst_join_person}
 \alias{lst_join_person}
-\title{Join person parameters onto a listr_data by id}
+\title{Join person parameters onto a listc_data by id}
 \usage{
 lst_join_person(x, person, dim = "theta")
 }
 \arguments{
-\item{x}{A \code{listr_data} object.}
+\item{x}{A \code{listc_data} object.}
 
 \item{person}{A data.frame with columns id, theta, theta_se.}
 

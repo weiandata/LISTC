@@ -25,7 +25,7 @@ test_that("PV 模板展开", {
 
 test_that("compute_stat_pv 手算 Rubin 合并", {
   spec <- structure(list(type = "mean", var_quo = NULL, is_prop = FALSE,
-                         params = list()), class = "listr_stat")
+                         params = list()), class = "listc_stat")
   x1 <- c(1, 2, 3, 4)
   x2 <- c(2, 3, 4, 5)
   w <- rep(1, 4)
@@ -97,7 +97,7 @@ test_that("PV + replicate weights 组合(PISA 完整方差)", {
 test_that("Rubin 总方差蒙特卡洛覆盖率", {
   skip_on_cran()
   spec <- structure(list(type = "mean", var_quo = NULL, is_prop = FALSE,
-                         params = list()), class = "listr_stat")
+                         params = list()), class = "listc_stat")
   set.seed(31)
   n <- 400
   m_pv <- 5

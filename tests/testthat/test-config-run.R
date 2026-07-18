@@ -51,9 +51,9 @@ test_that("lst_run 端到端:csv -> xlsx + json", {
   res <- lst_run(cfg, quiet = TRUE)
   expect_true(file.exists(xlsx))
   expect_true(file.exists(json))
-  expect_s3_class(res$tables$区域均值, "listr_table")
+  expect_s3_class(res$tables$区域均值, "listc_table")
   js <- jsonlite::fromJSON(json, simplifyDataFrame = TRUE)
-  expect_equal(js$package, "LISTR")
+  expect_equal(js$package, "LISTC")
   expect_true(length(js$tables$interpretation[[1]]) > 0)
 
   # YAML 字符串同样可用
@@ -72,17 +72,17 @@ test_that("lst_run 端到端:csv -> xlsx + json", {
     "      m: {stat: st_mean, var: math}\n"
   )
   res2 <- lst_run(yml, quiet = TRUE)
-  expect_s3_class(res2$tables$t1, "listr_table")
+  expect_s3_class(res2$tables$t1, "listc_table")
 })
 
-test_that("read_listr 分派与列选择", {
+test_that("read_listc 分派与列选择", {
   d <- data.frame(a = 1:3, b = 4:6, c = 7:9)
   csv <- tempfile(fileext = ".csv")
   utils::write.csv(d, csv, row.names = FALSE)
-  r <- read_listr(csv, col_select = c("a", "c"))
+  r <- read_listc(csv, col_select = c("a", "c"))
   expect_equal(names(r), c("a", "c"))
-  expect_error(read_listr("no-such.file.csv"), "找不到")
+  expect_error(read_listc("no-such.file.csv"), "找不到")
   bad <- tempfile(fileext = ".foo")
   file.create(bad)
-  expect_error(read_listr(bad), "暂不支持")
+  expect_error(read_listc(bad), "暂不支持")
 })

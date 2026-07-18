@@ -1,18 +1,18 @@
-# LISTR 性能基准(design doc 9.1 验收)
+# LISTC 性能基准(design doc 9.1 验收)
 # 运行: Rscript scripts/benchmark.R [n]  (默认 1e6;验收线用 5e6)
 # 记录典型任务耗时与峰值内存;16GB 环境验收: 5e6 全套表 < 5 分钟
 
 # 未安装时回退到 devtools::load_all(从包根目录运行)
-if (!requireNamespace("LISTR", quietly = TRUE)) {
+if (!requireNamespace("LISTC", quietly = TRUE)) {
   suppressPackageStartupMessages(devtools::load_all(".", quiet = TRUE))
 } else {
-  suppressPackageStartupMessages(library(LISTR))
+  suppressPackageStartupMessages(library(LISTC))
 }
 
 args <- commandArgs(trailingOnly = TRUE)
 n <- if (length(args) >= 1) as.numeric(args[1]) else 1e6
 n_items <- 50
-cat(sprintf("== LISTR benchmark: n = %s, items = %d ==\n",
+cat(sprintf("== LISTC benchmark: n = %s, items = %d ==\n",
             format(n, big.mark = ","), n_items))
 
 set.seed(1)

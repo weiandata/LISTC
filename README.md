@@ -1,18 +1,18 @@
-# LISTR <img align="right" width="120" alt="" src="">
+# LISTC
 
 > **Pivot-style statistical tables for large-scale assessment data —
 > every cell with the right standard error.**
 
-[![R-CMD-check](https://github.com/weiandata/LISTR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/weiandata/LISTR/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/weiandata/LISTC/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/weiandata/LISTC/actions/workflows/R-CMD-check.yaml)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0)
-[![coverage: 95.9%](https://img.shields.io/badge/coverage-95.9%25-brightgreen.svg)](scripts/coverage.R)
+[![coverage: 96.1%](https://img.shields.io/badge/coverage-96.1%25-brightgreen.svg)](scripts/coverage.R)
 
 **[中文文档 →](README.zh-CN.md)** ·
 [Quick start for non-programmers](docs/guides/quickstart-en.md) ·
 [Advanced guide](docs/guides/advanced-en.md) ·
 [Design document](docs/design-v1.md)
 
-LISTR turns assessment and survey microdata — demographics, scores,
+LISTC turns assessment and survey microdata — demographics, scores,
 sampling weights, IRT ability estimates with individual standard errors,
 replicate weights, plausible values — into **Excel-pivot-style tables**
 where you freely choose the row variables, column variables and cell
@@ -23,21 +23,21 @@ No existing R package combines both halves: survey packages
 (EdSurvey, intsvy, Rrepest, BIFIEsurvey) compute correct statistics but
 offer no free-form table layout; pivot packages (pivottabler) lay out
 tables but know nothing about weights, replicate designs or measurement
-error. LISTR does both, at scale: **5 million respondents, full table
+error. LISTC does both, at scale: **5 million respondents, full table
 set, ~10 seconds on a laptop**.
 
 ## Installation
 
 ```r
-# install.packages("LISTR")                      # once on CRAN
+# install.packages("LISTC")                      # once on CRAN
 # install.packages("remotes")
-remotes::install_github("weiandata/LISTR")       # development version
+remotes::install_github("weiandata/LISTC")       # development version
 ```
 
 ## Quick example
 
 ```r
-library(LISTR)
+library(LISTC)
 
 # 1. Declare what each column means
 x <- lst_data(students,
@@ -74,7 +74,7 @@ lst_interpret(tab)           # rule-based plain-language conclusions
 | Audience | Interface | Output |
 | --- | --- | --- |
 | Survey staff (no R) | Fill an **Excel configuration workbook** (`lst_config_template()`), run one line: `lst_run("config.xlsx")` | Styled Excel + auto interpretation sheet, HTML report |
-| Statisticians | Full function API (`lst_data → st_* → lst_table`) | `listr_table` object, tidy long data, all SE components |
+| Statisticians | Full function API (`lst_data → st_* → lst_table`) | `listc_table` object, tidy long data, all SE components |
 | AI agents / pipelines | YAML/JSON config for `lst_run()`; JSON Schema + `llms.txt` ship in `inst/` | Machine-readable JSON with per-statistic metadata |
 
 ## Variance engines
@@ -90,7 +90,7 @@ components (`se_sampling`, `se_measurement`, `se_total`).
 | Plausible values | `pv = list(math = "PV#MATH")` | linearized or replicate | Rubin (1987) combination |
 
 All formulas are validated against Monte Carlo simulations in the test
-suite (95.9% coverage; core engine files > 95%). A notable result baked
+suite (96.1% coverage; core engine files > 95%). A notable result baked
 into the design: for EAP estimates with posterior SDs, probabilistic
 classification is already calibrated — while WLE/ML estimates need the
 `"latent"` empirical-Bayes correction. See
@@ -117,11 +117,11 @@ Measured on Apple Silicon (see `scripts/benchmark.R`):
 
 ## Documentation
 
-* Vignette: `vignette("LISTR-intro")`
+* Vignette: `vignette("LISTC-intro")`
 * Non-programmer guides (EN/中文): [docs/guides/](docs/guides/)
 * Design document with all methods and Monte Carlo evidence:
   [docs/design-v1.md](docs/design-v1.md)
-* For LLM agents: `system.file("llms.txt", package = "LISTR")`
+* For LLM agents: `system.file("llms.txt", package = "LISTC")`
 
 ## License
 

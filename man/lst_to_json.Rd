@@ -2,12 +2,12 @@
 % Please edit documentation in R/export-json.R
 \name{lst_to_json}
 \alias{lst_to_json}
-\title{Export listr_table(s) as machine-readable JSON (for AI agents)}
+\title{Export listc_table(s) as machine-readable JSON (for AI agents)}
 \usage{
 lst_to_json(tab, path = NULL, pretty = TRUE)
 }
 \arguments{
-\item{tab}{A \code{listr_table} or named list of them.}
+\item{tab}{A \code{listc_table} or named list of them.}
 
 \item{path}{Optional output path; when \code{NULL}, returns the JSON string.}
 

@@ -1,8 +1,8 @@
-#' Extract the tidy long form of a listr_table
+#' Extract the tidy long form of a listc_table
 #'
 #' One row per group combination x statistic x category, with columns
 #' estimate, se_sampling, se_measurement, se_total, n, sum_w.
-#' @param tab A `listr_table`.
+#' @param tab A `listc_table`.
 #' @return A tibble.
 #' @examples
 #' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
@@ -14,15 +14,15 @@
 #' as_long(tab)
 #' @export
 as_long <- function(tab) {
-  stopifnot(inherits(tab, "listr_table"))
+  stopifnot(inherits(tab, "listc_table"))
   tab$long
 }
 
-#' Extract the wide (row x column layout) form of a listr_table
+#' Extract the wide (row x column layout) form of a listc_table
 #'
 #' Cells are formatted according to the table's `format` and `digits`;
 #' proportion-type statistics are shown as percentages.
-#' @param tab A `listr_table`.
+#' @param tab A `listc_table`.
 #' @return A tibble laid out as declared in [lst_table()].
 #' @examples
 #' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
@@ -34,7 +34,7 @@ as_long <- function(tab) {
 #' as_wide(tab)
 #' @export
 as_wide <- function(tab) {
-  stopifnot(inherits(tab, "listr_table"))
+  stopifnot(inherits(tab, "listc_table"))
   df <- as.data.frame(tab$long, stringsAsFactors = FALSE)
   digits <- tab$digits
 

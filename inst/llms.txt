@@ -1,6 +1,6 @@
-# LISTR — Large-scale Item-response Statistics Tables in R
+# LISTC — Large-scale Item-response Statistical Table Constructor
 
-LISTR turns assessment/survey sample data (demographics, weights, scores,
+LISTC turns assessment/survey sample data (demographics, weights, scores,
 ability estimates theta with individual IRT standard errors, item responses)
 into pivot-style statistical tables. Every cell carries an estimate and a
 standard error combining sampling variance and measurement variance
@@ -10,7 +10,7 @@ propagated from individual IRT SEs.
 
 Generate a YAML or JSON configuration and call:
 
-    library(LISTR)
+    library(LISTC)
     result <- lst_run("config.yml")
 
 Config schema: inst/schema/config.schema.json (validate before running).
@@ -59,7 +59,7 @@ method="prob" uses each person's theta SE for probabilistic classification.
 correction: use "none" when theta is an EAP estimate with posterior SD
 (already calibrated); use "latent" when theta is a WLE/ML estimate with
 sampling SE (empirical-Bayes shrinkage to the latent distribution;
-supply rho or let LISTR estimate reliability from the data).
+supply rho or let LISTC estimate reliability from the data).
 
 ## Replicate weights (v0.3)
 

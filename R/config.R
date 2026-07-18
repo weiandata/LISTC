@@ -5,14 +5,14 @@ VALID_STATS <- c("st_mean", "st_prop_above", "st_level_prop", "st_quantile",
                  "st_sd", "st_count", "st_wcount", "st_pvalue",
                  "st_option_dist")
 
-#' Read and validate a LISTR run configuration
+#' Read and validate a LISTC run configuration
 #'
 #' Accepts a YAML/JSON file path, a YAML/JSON string, or a named list.
 #' Validation errors are reported in plain Chinese pointing to the
 #' offending field. (Excel configuration workbooks arrive in v0.2.)
 #'
 #' @param config Path to .yml/.yaml/.json, a YAML/JSON string, or a list.
-#' @return A validated `listr_config` object.
+#' @return A validated `listc_config` object.
 #' @examples
 #' cfg <- lst_config(list(
 #'   data = "students.csv",
@@ -95,11 +95,11 @@ lst_config <- function(config) {
                   "\u3002\u53ef\u9009: est, est_se, est_ci, percent\u3002"))
     }
   }
-  structure(cfg, class = "listr_config")
+  structure(cfg, class = "listc_config")
 }
 
 parse_config <- function(config) {
-  if (inherits(config, "listr_config")) {
+  if (inherits(config, "listc_config")) {
     return(unclass(config))
   }
   if (is.list(config)) {

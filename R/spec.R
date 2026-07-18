@@ -1,4 +1,4 @@
-#' Create a listr_data object
+#' Create a listc_data object
 #'
 #' Attaches variable roles (id, group, weight, score, theta, theta_se, resp)
 #' to a data frame. Columns can be given as bare names or character
@@ -29,7 +29,7 @@
 #' @param pv_sampling Sampling-variance convention for PV dimensions:
 #'   `"first"` (PISA manual practice: first PV only) or `"average"`
 #'   (average across all PVs).
-#' @return A `listr_data` object.
+#' @return A `listc_data` object.
 #' @examples
 #' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
 #'                 w = runif(100, 0.5, 2), theta = rnorm(100),
@@ -71,7 +71,7 @@ lst_data <- function(data, id = NULL, group = NULL, weight = NULL,
     list(data = data, roles = roles, key = key,
          rep_method = rep_method, fay_k = fay_k,
          pv_sampling = match.arg(pv_sampling)),
-    class = "listr_data"
+    class = "listc_data"
   )
   lst_validate(x)
 }
@@ -110,10 +110,10 @@ resolve_rep_weights <- function(quo, data) {
   v
 }
 
-#' Validate a listr_data object
+#' Validate a listc_data object
 #'
 #' Checks role pairing (theta/theta_se), non-negative weights, unique ids.
-#' @param x A `listr_data` object.
+#' @param x A `listc_data` object.
 #' @return `x`, invisibly on success.
 #' @examples
 #' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
@@ -124,7 +124,7 @@ resolve_rep_weights <- function(quo, data) {
 #' lst_validate(x)
 #' @export
 lst_validate <- function(x) {
-  stopifnot(inherits(x, "listr_data"))
+  stopifnot(inherits(x, "listc_data"))
   r <- x$roles
   d <- x$data
   if (!is.null(r$theta) || !is.null(r$theta_se)) {
@@ -209,9 +209,9 @@ lst_validate <- function(x) {
 }
 
 #' @export
-print.listr_data <- function(x, ...) {
+print.listc_data <- function(x, ...) {
   r <- x$roles
-  cat("<listr_data> ", nrow(x$data), " \u884c x ", ncol(x$data), " \u5217\n", sep = "")
+  cat("<listc_data> ", nrow(x$data), " \u884c x ", ncol(x$data), " \u5217\n", sep = "")
   show <- function(label, v) {
     if (!is.null(v)) {
       nm <- names(v)

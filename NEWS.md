@@ -1,4 +1,4 @@
-# LISTR 1.0.0
+# LISTC 1.0.0
 
 First public release.
 

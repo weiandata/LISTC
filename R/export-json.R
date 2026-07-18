@@ -1,10 +1,10 @@
-#' Export listr_table(s) as machine-readable JSON (for AI agents)
+#' Export listc_table(s) as machine-readable JSON (for AI agents)
 #'
 #' Emits tidy long results plus metadata for every statistic (type,
 #' variable, method, correction, rho) and an `interpretation` field from
 #' [lst_interpret()].
 #'
-#' @param tab A `listr_table` or named list of them.
+#' @param tab A `listc_table` or named list of them.
 #' @param path Optional output path; when `NULL`, returns the JSON string.
 #' @param pretty Pretty-print JSON.
 #' @return JSON string (invisibly when written to `path`).
@@ -20,8 +20,8 @@
 lst_to_json <- function(tab, path = NULL, pretty = TRUE) {
   tabs <- normalize_tabs(tab)
   payload <- list(
-    package = "LISTR",
-    version = as.character(utils::packageVersion("LISTR")),
+    package = "LISTC",
+    version = as.character(utils::packageVersion("LISTC")),
     generated = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"),
     tables = lapply(names(tabs), function(nm) {
       tb <- tabs[[nm]]

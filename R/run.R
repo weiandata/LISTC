@@ -1,4 +1,4 @@
-#' One-shot entry point: run a full LISTR analysis from a configuration
+#' One-shot entry point: run a full LISTC analysis from a configuration
 #'
 #' Reads the config, imports only the needed columns, applies roles,
 #' computes all requested tables and writes all requested outputs
@@ -6,7 +6,7 @@
 #'
 #' @param config Anything accepted by [lst_config()].
 #' @param quiet Suppress progress messages.
-#' @return Invisibly, `list(tables = <named listr_table list>, log = <list>)`.
+#' @return Invisibly, `list(tables = <named listc_table list>, log = <list>)`.
 #' @examples
 #' csv <- tempfile(fileext = ".csv")
 #' write.csv(data.frame(id = 1:60, g = rep(c("a", "b"), 30),
@@ -87,7 +87,7 @@ lst_run <- function(config, quiet = FALSE) {
   }
 
   say("\u8bfb\u53d6\u6570\u636e: ", cfg$data)
-  data <- read_listr(cfg$data, col_select = cols)
+  data <- read_listc(cfg$data, col_select = cols)
   say("\u8bfb\u5165 ", nrow(data), " \u884c x ", ncol(data), " \u5217")
 
   roles_id <- r$id

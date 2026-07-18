@@ -4,14 +4,14 @@
 #' cell statistics; every cell carries estimate and SE components
 #' (sampling + measurement, design doc 6).
 #'
-#' @param x A `listr_data` object.
+#' @param x A `listc_data` object.
 #' @param rows Row grouping variables (bare names or character vector).
 #' @param cols Column grouping variables.
 #' @param values Named list of statistic specs (`st_*` functions).
 #' @param format Cell display: `"est"`, `"est_se"`, `"est_ci"`, `"percent"`.
 #' @param digits Rounding digits (single value, or named per-statistic).
 #' @param margins Add "Total" row/column margins.
-#' @return A `listr_table` object; see [as_long()] and [as_wide()].
+#' @return A `listc_table` object; see [as_long()] and [as_wide()].
 #' @examples
 #' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
 #'                 w = runif(100, 0.5, 2), theta = rnorm(100),
@@ -27,15 +27,15 @@
 #' @export
 lst_table <- function(x, rows = NULL, cols = NULL, values,
                       format = "est_se", digits = 2, margins = FALSE) {
-  if (!inherits(x, "listr_data")) {
-    rlang::abort("x \u5fc5\u987b\u662f lst_data() \u521b\u5efa\u7684 listr_data \u5bf9\u8c61\u3002")
+  if (!inherits(x, "listc_data")) {
+    rlang::abort("x \u5fc5\u987b\u662f lst_data() \u521b\u5efa\u7684 listc_data \u5bf9\u8c61\u3002")
   }
   if (!is.list(values) || length(values) == 0 ||
       is.null(names(values)) || any(names(values) == "")) {
     rlang::abort("values \u5fc5\u987b\u662f\u547d\u540d\u5217\u8868,\u5982 list(\u5747\u503c = st_mean(math))\u3002")
   }
   for (v in values) {
-    if (!inherits(v, "listr_stat")) {
+    if (!inherits(v, "listc_stat")) {
       rlang::abort("values \u7684\u6bcf\u4e2a\u5143\u7d20\u5fc5\u987b\u7531 st_*() \u51fd\u6570\u521b\u5efa\u3002")
     }
   }
@@ -129,7 +129,7 @@ lst_table <- function(x, rows = NULL, cols = NULL, values,
       values = names(values), meta = meta,
       format = format, digits = digits, margins = margins
     ),
-    class = "listr_table"
+    class = "listc_table"
   )
 }
 
@@ -326,8 +326,8 @@ compute_item_stat <- function(x, dt, spec, sets, grp_vars, repw = NULL) {
 }
 
 #' @export
-print.listr_table <- function(x, ...) {
-  cat("<listr_table> ",
+print.listc_table <- function(x, ...) {
+  cat("<listc_table> ",
       paste(x$row_vars, collapse = "+"), " x ",
       paste(x$col_vars, collapse = "+"),
       " | \u7edf\u8ba1\u91cf: ", paste(x$values, collapse = ", "),

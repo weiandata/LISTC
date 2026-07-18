@@ -1,11 +1,11 @@
-LISTR copyright and licensing notice
+LISTC copyright and licensing notice
 =========================================
 
 Copyright (C) 2026 WEIAN DATA TECH (Beijing) Co., Ltd.
 (惟安数据科技（北京）有限公司)
 Contact: contact@weiandata.com
 
-LISTR source code, documentation, tests, and bundled synthetic data are
+LISTC source code, documentation, tests, and bundled synthetic data are
 copyrighted by WEIAN DATA TECH (Beijing) Co., Ltd. and distributed under the
 GNU General Public License version 2 or, at the recipient's option, any later
 version (GPL >= 2).
@@ -76,6 +76,6 @@ upstream license terms.
 License
 -------
 
-The complete LISTR package is distributed under the GNU General Public
+The complete LISTC package is distributed under the GNU General Public
 License version 2 or, at the recipient's option, any later version (GPL >= 2).
 Copyright in external dependencies remains with their respective holders.

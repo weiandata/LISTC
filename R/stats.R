@@ -1,12 +1,12 @@
 # Statistic constructors used inside lst_table(values = ...).
-# Each returns a "listr_stat" spec; the table engine resolves the variable
+# Each returns a "listc_stat" spec; the table engine resolves the variable
 # and calls compute_stat() per group. Every statistic yields
 # estimate + se_sampling + se_measurement + se_total (design doc 5-6).
 
 new_stat <- function(type, var_quo = NULL, is_prop = FALSE, params = list()) {
   structure(
     list(type = type, var_quo = var_quo, is_prop = is_prop, params = params),
-    class = "listr_stat"
+    class = "listc_stat"
   )
 }
 

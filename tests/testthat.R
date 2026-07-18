@@ -1,5 +1,5 @@
 # This file is part of the standard setup for testthat.
 library(testthat)
-library(LISTR)
+library(LISTC)
 
-test_check("LISTR")
+test_check("LISTC")

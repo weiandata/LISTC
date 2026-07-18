@@ -1,14 +1,15 @@
-#' Export listr_table(s) as a standalone styled HTML report
+#' Export listc_table(s) as a standalone styled HTML report
 #'
 #' Dependency-free HTML rendering (v0.4): Chinese-friendly fonts,
 #' zebra-striped pivot tables, an interpretation section per table and a
 #' methods footnote describing the variance engine in use. Suitable for
 #' emailing or embedding in Rmd/Quarto via `htmltools::HTML`.
 #'
-#' @param tab A `listr_table` or named list of them.
+#' @param tab A `listc_table` or named list of them.
 #' @param path Optional output .html path; when `NULL`, returns the HTML
 #'   string invisibly.
-#' @param title Report title.
+#' @param title Report title; `NULL` uses a built-in default title
+#'   (Chinese for "statistical results").
 #' @param interpret Include the rule-based interpretation section.
 #' @return HTML string, invisibly.
 #' @examples
@@ -22,8 +23,10 @@
 #' lst_to_html(tab, f, title = "Report")
 #' file.exists(f)
 #' @export
-lst_to_html <- function(tab, path = NULL, title = "\u7edf\u8ba1\u7ed3\u679c",
+lst_to_html <- function(tab, path = NULL, title = NULL,
                         interpret = TRUE) {
+  # \u9ed8\u8ba4\u6807\u9898"\u7edf\u8ba1\u7ed3\u679c";\u7528 NULL \u54e8\u5175\u800c\u975e\u5b57\u9762\u91cf,\u4ee5\u4fdd\u6301 Rd usage \u6bb5\u4e3a ASCII\u3002
+  if (is.null(title)) title <- "\u7edf\u8ba1\u7ed3\u679c"
   tabs <- normalize_tabs(tab)
   esc <- function(s) {
     s <- gsub("&", "&amp;", s, fixed = TRUE)
@@ -87,7 +90,7 @@ lst_to_html <- function(tab, path = NULL, title = "\u7edf\u8ba1\u7ed3\u679c",
     paste0(vapply(names(tabs), function(nm) {
       render_table(nm, tabs[[nm]])
     }, character(1)), collapse = ""),
-    "<footer>LISTR ", as.character(utils::packageVersion("LISTR")),
+    "<footer>LISTC ", as.character(utils::packageVersion("LISTC")),
     " \u00b7 ", format(Sys.time(), "%Y-%m-%d %H:%M"), "</footer>",
     "</body></html>"
   )

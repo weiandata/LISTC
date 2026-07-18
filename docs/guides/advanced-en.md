@@ -1,4 +1,4 @@
-# LISTR Advanced Guide (non-programmer edition)
+# LISTC Advanced Guide (non-programmer edition)
 
 [中文版](advanced-zh.md) · [← Quick start](quickstart-en.md)
 
@@ -33,7 +33,7 @@ column in the data.
   score get misclassified by measurement error, biasing the shares.
 - `prob` (recommended): uses each person's ability ± SE to compute the
   **probability** of falling in each level, then aggregates. Robust to
-  misclassification — a LISTR speciality.
+  misclassification — a LISTC speciality.
 - Correction column: leave **empty** for **EAP**-type ability estimates
   (flexMIRT/mirt); fill `latent` for **WLE/ML** estimates
   (Winsteps/ConQuest), otherwise extreme-level shares are
@@ -51,7 +51,7 @@ In the data & roles sheet:
 
 If the data carries **plausible values** (PV1MATH..PV10MATH), put
 `PV#MATH` in the PV column of the ability-dimensions sheet (`#` stands
-for the number) and leave ability/SE columns empty. LISTR performs the
+for the number) and leave ability/SE columns empty. LISTC performs the
 Rubin combination automatically; declaring both PVs and replicate
 weights reproduces the official PISA variance recipe. Do **not** set
 method `prob` on a PV dimension — PVs already carry the measurement

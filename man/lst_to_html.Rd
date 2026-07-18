@@ -2,17 +2,18 @@
 % Please edit documentation in R/export-html.R
 \name{lst_to_html}
 \alias{lst_to_html}
-\title{Export listr_table(s) as a standalone styled HTML report}
+\title{Export listc_table(s) as a standalone styled HTML report}
 \usage{
-lst_to_html(tab, path = NULL, title = "统计结果", interpret = TRUE)
+lst_to_html(tab, path = NULL, title = NULL, interpret = TRUE)
 }
 \arguments{
-\item{tab}{A \code{listr_table} or named list of them.}
+\item{tab}{A \code{listc_table} or named list of them.}
 
 \item{path}{Optional output .html path; when \code{NULL}, returns the HTML
 string invisibly.}
 
-\item{title}{Report title.}
+\item{title}{Report title; \code{NULL} uses a built-in default title
+(Chinese for "statistical results").}
 
 \item{interpret}{Include the rule-based interpretation section.}
 }

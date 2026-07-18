@@ -15,7 +15,7 @@ Thumbs.db
 .RData
 .Ruserdata
 *.Rcheck/
-LISTR_*.tar.gz
+LISTC_*.tar.gz
 inst/doc
 
 # Restricted client data - never commit

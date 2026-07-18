@@ -1,4 +1,4 @@
-Package: LISTR
+Package: LISTC
 Type: Package
 Title: Pivot-Style Statistical Tables for Large-Scale Assessment Data
 Version: 1.0.0
@@ -14,7 +14,7 @@ Description: Turns assessment and survey sample data (demographics, scores,
     carries a design-appropriate standard error. Provides weighted means,
     proportions above cut scores, proficiency-level percentages and
     quantiles; sampling variance via linearization, Woodruff (1952)
-    <doi:10.1080/01621459.1952.10483550> intervals for quantiles, or
+    <doi:10.1080/01621459.1952.10483443> intervals for quantiles, or
     balanced repeated replication and jackknife replicate weights
     including Fay's method; measurement variance via delta-method
     propagation of individual standard errors or Rubin (1987)
@@ -49,6 +49,6 @@ Suggests:
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
-URL: https://github.com/weiandata/LISTR
-BugReports: https://github.com/weiandata/LISTR/issues
+URL: https://github.com/weiandata/LISTC
+BugReports: https://github.com/weiandata/LISTC/issues
 Config/roxygen2/version: 8.0.0

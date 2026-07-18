@@ -13,10 +13,10 @@
 #' f <- tempfile(fileext = ".csv")
 #' write.csv(data.frame(id = 1:3, score = c(10, 12, 9)), f,
 #'           row.names = FALSE)
-#' read_listr(f)
-#' read_listr(f, col_select = "score")
+#' read_listc(f)
+#' read_listc(f, col_select = "score")
 #' @export
-read_listr <- function(path, col_select = NULL, ...) {
+read_listc <- function(path, col_select = NULL, ...) {
   if (!file.exists(path)) {
     rlang::abort(paste0("\u627e\u4e0d\u5230\u6570\u636e\u6587\u4ef6: ", path))
   }

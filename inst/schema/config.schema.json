@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/weiandata/LISTR/inst/schema/config.schema.json",
-  "title": "LISTR run configuration",
+  "$id": "https://github.com/weiandata/LISTC/inst/schema/config.schema.json",
+  "title": "LISTC run configuration",
   "type": "object",
   "required": ["data", "roles", "tables"],
   "properties": {

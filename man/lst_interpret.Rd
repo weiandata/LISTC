@@ -2,12 +2,12 @@
 % Please edit documentation in R/interpret.R
 \name{lst_interpret}
 \alias{lst_interpret}
-\title{Rule-based plain-language interpretation of a listr_table}
+\title{Rule-based plain-language interpretation of a listc_table}
 \usage{
 lst_interpret(tab, lang = c("zh", "en"))
 }
 \arguments{
-\item{tab}{A \code{listr_table}.}
+\item{tab}{A \code{listc_table}.}
 
 \item{lang}{Output language; v0.1 supports \code{"zh"}.}
 }

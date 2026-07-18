@@ -148,12 +148,12 @@ read_conquest_person <- function(path,
   )
 }
 
-#' Join person parameters onto a listr_data by id
+#' Join person parameters onto a listc_data by id
 #'
 #' Merges a person-parameter table (columns id, theta, theta_se) onto the
 #' data by the declared id role and registers the theta/theta_se roles.
 #'
-#' @param x A `listr_data` object.
+#' @param x A `listc_data` object.
 #' @param person A data.frame with columns id, theta, theta_se.
 #' @param dim Dimension name for the merged theta (default "theta").
 #' @return `x` with theta/theta_se roles filled.
@@ -166,7 +166,7 @@ read_conquest_person <- function(path,
 #' x$roles$theta
 #' @export
 lst_join_person <- function(x, person, dim = "theta") {
-  stopifnot(inherits(x, "listr_data"))
+  stopifnot(inherits(x, "listc_data"))
   if (is.null(x$roles$id)) {
     rlang::abort("lst_join_person \u9700\u8981\u5148\u5728 lst_data() \u4e2d\u58f0\u660e id\u3002")
   }

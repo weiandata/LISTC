@@ -2,7 +2,7 @@
 % Please edit documentation in R/spec.R
 \name{lst_data}
 \alias{lst_data}
-\title{Create a listr_data object}
+\title{Create a listc_data object}
 \usage{
 lst_data(
   data,
@@ -61,7 +61,7 @@ PV dimensions are analyzed with Rubin combination.}
 (average across all PVs).}
 }
 \value{
-A \code{listr_data} object.
+A \code{listc_data} object.
 }
 \description{
 Attaches variable roles (id, group, weight, score, theta, theta_se, resp)

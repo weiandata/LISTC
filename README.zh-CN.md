@@ -1,38 +1,38 @@
-# LISTR
+# LISTC
 
 > **大规模测评数据的透视式统计表——每个单元格都带正确的标准误。**
 
-[![R-CMD-check](https://github.com/weiandata/LISTR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/weiandata/LISTR/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/weiandata/LISTC/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/weiandata/LISTC/actions/workflows/R-CMD-check.yaml)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0)
-[![覆盖率: 95.9%](https://img.shields.io/badge/coverage-95.9%25-brightgreen.svg)](scripts/coverage.R)
+[![覆盖率: 96.1%](https://img.shields.io/badge/coverage-96.1%25-brightgreen.svg)](scripts/coverage.R)
 
 **[English →](README.md)** ·
 [非编程人员快速上手](docs/guides/quickstart-zh.md) ·
 [进阶操作指南](docs/guides/advanced-zh.md) ·
 [设计文档](docs/design-v1.md)
 
-LISTR 把测评/调查的个体数据——人口学变量、得分、抽样权重、带个体
+LISTC 把测评/调查的个体数据——人口学变量、得分、抽样权重、带个体
 标准误的 IRT 能力值、复制权重、plausible values——变成 **Excel
 数据透视表式的统计表**:行变量、列变量、单元格统计量自由组合,
 且每个单元格都带有**与抽样设计和测量模型匹配的标准误**。
 
 现有 R 生态没有同时做到这两端:调查统计包(EdSurvey、intsvy、
 Rrepest、BIFIEsurvey)算得对但没有自由布局;透视表包(pivottabler)
-能布局但不懂权重、复制设计和测量误差。LISTR 两者兼得,并且够快:
+能布局但不懂权重、复制设计和测量误差。LISTC 两者兼得,并且够快:
 **500 万样本全套统计表,笔记本约 10 秒**。
 
 ## 安装
 
 ```r
-# install.packages("LISTR")                      # 上架 CRAN 后
+# install.packages("LISTC")                      # 上架 CRAN 后
 # install.packages("remotes")
-remotes::install_github("weiandata/LISTR")       # 开发版
+remotes::install_github("weiandata/LISTC")       # 开发版
 ```
 
 ## 快速示例
 
 ```r
-library(LISTR)
+library(LISTC)
 
 # 1. 声明每一列的角色
 x <- lst_data(students,
@@ -69,7 +69,7 @@ lst_interpret(tab)           # 规则化中文自动解读
 | 用户 | 交互方式 | 输出 |
 | --- | --- | --- |
 | 不写代码的调查人员 | 填 **Excel 配置模板**(`lst_config_template()` 生成),一行运行:`lst_run("配置.xlsx")` | 中文样式 Excel(含"结论"自动解读 sheet)、HTML 报告 |
-| 统计人员 | 完整函数 API(`lst_data → st_* → lst_table`) | `listr_table` 对象、tidy 长表、SE 全分量 |
+| 统计人员 | 完整函数 API(`lst_data → st_* → lst_table`) | `listc_table` 对象、tidy 长表、SE 全分量 |
 | AI agent / 自动化管线 | YAML/JSON 配置驱动 `lst_run()`;包内附 JSON Schema 与 `llms.txt` | 带逐统计量元数据的机器可读 JSON |
 
 ## 方差引擎
@@ -84,7 +84,7 @@ lst_interpret(tab)           # 规则化中文自动解读
 | PISA/TIMSS 复制设计 | `rep_weights = "W_FSTR"`、`rep_method = "fay"` | BRR/Fay/JK1/JK2 | 同上 |
 | Plausible values | `pv = list(math = "PV#MATH")` | 线性化或复制权重 | Rubin(1987)合并 |
 
-全部公式经测试套件中的蒙特卡洛模拟验证(覆盖率 95.9%,核心引擎
+全部公式经测试套件中的蒙特卡洛模拟验证(覆盖率 96.1%,核心引擎
 文件均 >95%)。一个写进设计的重要结论:EAP + 后验标准差做概率化
 分类本身就是校准的,而 WLE/ML 估计需要 `"latent"` 校正——详见
 [设计文档 §4.1/§6](docs/design-v1.md)。
@@ -109,10 +109,10 @@ data.table 后端、按需读列、按题分块。Apple Silicon 实测
 
 ## 文档
 
-* Vignette:`vignette("LISTR-intro")`
+* Vignette:`vignette("LISTC-intro")`
 * 非编程人员指南(中/英):[docs/guides/](docs/guides/)
 * 设计文档(全部方法与蒙特卡洛证据):[docs/design-v1.md](docs/design-v1.md)
-* 面向 LLM agent:`system.file("llms.txt", package = "LISTR")`
+* 面向 LLM agent:`system.file("llms.txt", package = "LISTC")`
 
 ## 许可
 

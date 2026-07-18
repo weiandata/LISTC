@@ -4,13 +4,14 @@
 \alias{st_option_dist}
 \title{Weighted item option distribution (including missing rate)}
 \usage{
-st_option_dist(items = NULL, missing_as = "(缺失)")
+st_option_dist(items = NULL, missing_as = NULL)
 }
 \arguments{
 \item{items}{Character vector of item (resp) columns; \code{NULL} means all
 declared resp columns.}
 
-\item{missing_as}{Label used for missing responses.}
+\item{missing_as}{Label used for missing responses; \code{NULL} uses a
+built-in default label (Chinese for "missing").}
 }
 \value{
 A statistic spec for \code{\link[=lst_table]{lst_table()}}.

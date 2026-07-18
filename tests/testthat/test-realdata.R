@@ -29,7 +29,7 @@ test_that("真实监测数据冒烟:读入/角色/透视/解读", {
     }
     sav <- fixed
   }
-  d <- read_listr(sav, col_select = c(
+  d <- read_listc(sav, col_select = c(
     "ID", "WEIGHT", "SCORE", "LEVEL", "PROVINCE", "AREA",
     "SCHOOLTYPE", "GENDER"
   ), n_max = 20000)

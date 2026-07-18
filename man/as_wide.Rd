@@ -2,12 +2,12 @@
 % Please edit documentation in R/pivot.R
 \name{as_wide}
 \alias{as_wide}
-\title{Extract the wide (row x column layout) form of a listr_table}
+\title{Extract the wide (row x column layout) form of a listc_table}
 \usage{
 as_wide(tab)
 }
 \arguments{
-\item{tab}{A \code{listr_table}.}
+\item{tab}{A \code{listc_table}.}
 }
 \value{
 A tibble laid out as declared in \code{\link[=lst_table]{lst_table()}}.

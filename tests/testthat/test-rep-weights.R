@@ -1,6 +1,6 @@
 mk_spec <- function(type, is_prop = FALSE, params = list()) {
   structure(list(type = type, var_quo = NULL, is_prop = is_prop,
-                 params = params), class = "listr_stat")
+                 params = params), class = "listc_stat")
 }
 
 test_that("replicate 方差因子公式", {

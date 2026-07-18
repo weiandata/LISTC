@@ -42,29 +42,29 @@ test_that("pv 声明错误分支", {
   )
 })
 
-test_that("read_listr 各格式与标签转换", {
+test_that("read_listc 各格式与标签转换", {
   d <- data.frame(a = 1:5, b = letters[1:5])
   # xlsx 往返
   fx <- tempfile(fileext = ".xlsx")
   openxlsx::write.xlsx(d, fx)
-  r1 <- read_listr(fx)
+  r1 <- read_listc(fx)
   expect_equal(nrow(r1), 5)
-  r1b <- read_listr(fx, col_select = "a")
+  r1b <- read_listc(fx, col_select = "a")
   expect_equal(names(r1b), "a")
   # sav 往返 + 值标签转 factor + col_select
   fs <- tempfile(fileext = ".sav")
   ds <- data.frame(x = 1:4)
   ds$lab <- haven::labelled(c(1, 2, 1, 2), labels = c(男 = 1, 女 = 2))
   haven::write_sav(ds, fs)
-  r2 <- read_listr(fs)
+  r2 <- read_listc(fs)
   expect_true(is.factor(r2$lab))
   expect_equal(levels(r2$lab), c("男", "女"))
-  r2b <- read_listr(fs, col_select = "x")
+  r2b <- read_listc(fs, col_select = "x")
   expect_equal(names(r2b), "x")
   # dta 往返
   fd <- tempfile(fileext = ".dta")
   haven::write_dta(data.frame(y = c(1.5, 2.5)), fd)
-  expect_equal(nrow(read_listr(fd)), 2)
+  expect_equal(nrow(read_listc(fd)), 2)
 })
 
 test_that("read-irt 错误与回退分支", {
@@ -109,7 +109,7 @@ test_that("lst_table 输入校验与 rep 特殊统计量", {
                   rw1 = runif(60, .5, 1.5), rw2 = runif(60, .5, 1.5))
   x <- lst_data(d, id = sid, group = g, weight = w,
                 rep_weights = c(rw1, rw2), rep_method = "jk2")
-  expect_error(lst_table("x", values = list(m = st_mean(y))), "listr_data")
+  expect_error(lst_table("x", values = list(m = st_mean(y))), "listc_data")
   expect_error(lst_table(x, values = list(st_mean(y))), "命名")
   expect_error(lst_table(x, values = list(m = 1)), "st_")
   expect_error(lst_table(x, values = list(m = st_mean(nope))), "解析")
@@ -124,13 +124,13 @@ test_that("lst_table 输入校验与 rep 特殊统计量", {
   # 引擎内部错误分支
   expect_error(
     compute_stat_rep(structure(list(type = "mean", params = list()),
-                               class = "listr_stat"),
+                               class = "listc_stat"),
                      1:5, matrix(1, 5, 1), NULL, 1),
     "至少 1 个"
   )
   expect_error(
     est_stat(structure(list(type = "nope", params = list()),
-                       class = "listr_stat"), 1:5, rep(1, 5)),
+                       class = "listc_stat"), 1:5, rep(1, 5)),
     "不支持"
   )
 })
@@ -181,18 +181,18 @@ test_that("config 解析分支:passthrough/json/yaml 文件/坏扩展名", {
                        values = list(m = list(stat = "st_count"))))
   )
   c1 <- lst_config(cfg_list)
-  expect_s3_class(c1, "listr_config")
+  expect_s3_class(c1, "listc_config")
   expect_identical(unclass(lst_config(c1)), unclass(c1)) # passthrough
   # json 字符串与文件
   js <- jsonlite::toJSON(cfg_list, auto_unbox = TRUE)
-  expect_s3_class(lst_config(as.character(js)), "listr_config")
+  expect_s3_class(lst_config(as.character(js)), "listc_config")
   fj <- tempfile(fileext = ".json")
   writeLines(js, fj)
-  expect_s3_class(lst_config(fj), "listr_config")
+  expect_s3_class(lst_config(fj), "listc_config")
   # yaml 文件
   fy <- tempfile(fileext = ".yml")
   yaml::write_yaml(cfg_list, fy)
-  expect_s3_class(lst_config(fy), "listr_config")
+  expect_s3_class(lst_config(fy), "listc_config")
   # 坏扩展名与坏类型
   fb <- tempfile(fileext = ".docx")
   file.create(fb)
@@ -250,7 +250,7 @@ test_that("lst_run 非 quiet 消息与 sav 输入的列回退", {
 
 test_that("配置模板可复制(安装后可用)", {
   src <- system.file("templates", "config-template.xlsx",
-                     package = "LISTR")
+                     package = "LISTC")
   skip_if(src == "", "模板未随包安装(load_all 环境)")
   f <- file.path(tempdir(), "模板副本.xlsx")
   if (file.exists(f)) file.remove(f)

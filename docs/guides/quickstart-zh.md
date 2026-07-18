@@ -1,4 +1,4 @@
-# LISTR 快速上手(写给不写代码的你)
+# LISTC 快速上手(写给不写代码的你)
 
 [English version](quickstart-en.md) · [进阶指南 →](advanced-zh.md)
 
@@ -16,7 +16,7 @@ Excel 配置表 → 运行一行命令**。之后每次换数据,只改配置表
 
    ```r
    install.packages("remotes")
-   remotes::install_github("weiandata/LISTR")
+   remotes::install_github("weiandata/LISTC")
    ```
 
    > 如果公司内网有现成的安装包,按 IT 同事给的方式装即可。
@@ -26,7 +26,7 @@ Excel 配置表 → 运行一行命令**。之后每次换数据,只改配置表
 在控制台粘贴、回车:
 
 ```r
-LISTR::lst_config_template("我的配置.xlsx")
+LISTC::lst_config_template("我的配置.xlsx")
 ```
 
 你的"文档"或当前工作目录下会出现 **我的配置.xlsx**。用 Excel
@@ -53,7 +53,7 @@ LISTR::lst_config_template("我的配置.xlsx")
 回到 RStudio 控制台,粘贴、回车:
 
 ```r
-LISTR::lst_run("我的配置.xlsx")
+LISTC::lst_run("我的配置.xlsx")
 ```
 
 几秒钟后,配置里写的输出文件就生成了。
@@ -71,7 +71,7 @@ LISTR::lst_run("我的配置.xlsx")
 
 ## 出错了怎么办
 
-LISTR 的报错都是中文,直接告诉你哪里要改,例如:
+LISTC 的报错都是中文,直接告诉你哪里要改,例如:
 
 > 第 1 张表 的统计量 "优秀率" 缺少数值型 cutoff(阈值)。
 

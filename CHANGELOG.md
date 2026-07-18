@@ -7,12 +7,21 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [1.0.0] - 2026-07-18
 
-First public release of the LISTR package (see NEWS.md for the
+First public release of the LISTC package (see NEWS.md for the
 user-facing summary). Development milestones below.
+
+### Changed
+
+- Package renamed `LISTR` -> `LISTC` before first release: CRAN already
+  hosts an active package named `listr`, and CRAN policy forbids names
+  differing only in case. The rename covers the package name, the S3
+  classes (`listr_data`/`listr_table`/`listr_config` ->
+  `listc_*`) and the `read_listr()` -> `read_listc()` reader. No version
+  of the package was ever published under the old name.
 
 ### Added
 
-- v1.0 release engineering: runnable `@examples` on all 27 exported
+- v1.0 release engineering: runnable `@examples` on all 28 exported
   functions, CRAN metadata (Description with method references, NEWS.md,
   cran-comments.md, dependency licenses in inst/COPYRIGHTS), bilingual
   README (English + 简体中文) and bilingual non-programmer guides
@@ -55,17 +64,17 @@ user-facing summary). Development milestones below.
   with instructions), Winsteps PFILE and ConQuest person-file readers
   (`read_winsteps_pfile()`, `read_conquest_person()`), Woodruff SE for
   `st_quantile()`, interpretation rules for level proportions and item
-  p-values, introductory vignette (`LISTR-intro`), and a performance
+  p-values, introductory vignette (`LISTC-intro`), and a performance
   benchmark script (`scripts/benchmark.R`).
 
-- v0.1 implementation of the LISTR package: `lst_data()` roles/validation,
+- v0.1 implementation of the LISTC package: `lst_data()` roles/validation,
   weighted statistics (`st_mean`, `st_sd`, `st_prop_above`,
   `st_level_prop`, `st_quantile`, `st_count`/`st_wcount`, `st_pvalue`,
   `st_option_dist`) with sampling + measurement SE components,
   probabilistic classification (`method = "prob"`), empirical-Bayes
   `correction = "latent"` for WLE/ML estimates, data.table pivot engine
   (`lst_table()`, `as_long()`/`as_wide()`, margins), import layer
-  (`read_listr()` with `col_select`), config layer (`lst_config()`,
+  (`read_listc()` with `col_select`), config layer (`lst_config()`,
   `lst_run()`), Excel/JSON export with rule-based interpretation
   (`lst_to_excel()`, `lst_to_json()`, `lst_interpret()`), testthat
   suite with Monte Carlo checks, `inst/llms.txt`, config JSON Schema,

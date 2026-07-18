@@ -1,10 +1,11 @@
-#' Export listr_table(s) to a formatted Excel workbook
+#' Export listc_table(s) to a formatted Excel workbook
 #'
 #' Chinese-friendly defaults: DengXian base font and column widths
 #' estimated from full-width character counts; override via `style`.
-#' A final "结论" sheet carries the rule-based interpretation.
+#' A final interpretation sheet (titled "conclusions" in Chinese) carries
+#' the rule-based interpretation.
 #'
-#' @param tab A `listr_table` or named list of them (names become sheets).
+#' @param tab A `listc_table` or named list of them (names become sheets).
 #' @param path Output .xlsx path.
 #' @param style Optional list of overrides: `font`, `font_size`,
 #'   `header_fill`.
@@ -80,15 +81,15 @@ lst_to_excel <- function(tab, path, style = NULL, overwrite = FALSE,
 }
 
 normalize_tabs <- function(tab) {
-  if (inherits(tab, "listr_table")) {
+  if (inherits(tab, "listc_table")) {
     return(stats::setNames(list(tab), "\u7ed3\u679c")) # 结果
   }
   if (is.list(tab) && length(tab) > 0 &&
-      all(vapply(tab, inherits, logical(1), "listr_table"))) {
+      all(vapply(tab, inherits, logical(1), "listc_table"))) {
     if (is.null(names(tab)) || any(names(tab) == "")) {
       names(tab) <- paste0("\u8868", seq_along(tab)) # 表N
     }
     return(tab)
   }
-  rlang::abort("tab \u5fc5\u987b\u662f listr_table \u6216 listr_table \u7684\u547d\u540d\u5217\u8868\u3002")
+  rlang::abort("tab \u5fc5\u987b\u662f listc_table \u6216 listc_table \u7684\u547d\u540d\u5217\u8868\u3002")
 }

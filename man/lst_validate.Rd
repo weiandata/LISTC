@@ -2,12 +2,12 @@
 % Please edit documentation in R/spec.R
 \name{lst_validate}
 \alias{lst_validate}
-\title{Validate a listr_data object}
+\title{Validate a listc_data object}
 \usage{
 lst_validate(x)
 }
 \arguments{
-\item{x}{A \code{listr_data} object.}
+\item{x}{A \code{listc_data} object.}
 }
 \value{
 \code{x}, invisibly on success.

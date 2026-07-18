@@ -1,4 +1,4 @@
-# LISTR 配置示例:填好后运行 lst_run("config-example.yml")
+# LISTC 配置示例:填好后运行 lst_run("config-example.yml")
 # 完整字段说明见 inst/schema/config.schema.json
 
 data: students.csv          # 支持 csv/tsv/xlsx/sav/dta/sas7bdat

@@ -1,4 +1,4 @@
-# LISTR Quick Start (for non-programmers)
+# LISTC Quick Start (for non-programmers)
 
 [中文版](quickstart-zh.md) · [Advanced guide →](advanced-en.md)
 
@@ -16,7 +16,7 @@ every new dataset you only edit the workbook.
 
    ```r
    install.packages("remotes")
-   remotes::install_github("weiandata/LISTR")
+   remotes::install_github("weiandata/LISTC")
    ```
 
 ## Step 1: Generate and fill the configuration workbook
@@ -24,7 +24,7 @@ every new dataset you only edit the workbook.
 Paste into the Console and press Enter:
 
 ```r
-LISTR::lst_config_template("my-config.xlsx")
+LISTC::lst_config_template("my-config.xlsx")
 ```
 
 Open **my-config.xlsx** in Excel. Read the instructions sheet first,
@@ -51,7 +51,7 @@ Tips:
 ## Step 2: Run
 
 ```r
-LISTR::lst_run("my-config.xlsx")
+LISTC::lst_run("my-config.xlsx")
 ```
 
 Your output files appear within seconds.

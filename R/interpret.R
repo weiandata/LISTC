@@ -1,4 +1,4 @@
-#' Rule-based plain-language interpretation of a listr_table
+#' Rule-based plain-language interpretation of a listc_table
 #'
 #' Generates descriptive conclusions from templated rules (no LLM):
 #' highest/lowest groups, significant differences (difference > 2 x
@@ -6,7 +6,7 @@
 #' statistics (mean, sd, prop_above); level/item statistics gain rules
 #' in v0.2.
 #'
-#' @param tab A `listr_table`.
+#' @param tab A `listc_table`.
 #' @param lang Output language; v0.1 supports `"zh"`.
 #' @return Character vector of interpretation sentences.
 #' @examples
@@ -19,7 +19,7 @@
 #' lst_interpret(tab)
 #' @export
 lst_interpret <- function(tab, lang = c("zh", "en")) {
-  stopifnot(inherits(tab, "listr_table"))
+  stopifnot(inherits(tab, "listc_table"))
   lang <- match.arg(lang)
   long <- tab$long
   out <- character(0)

@@ -4,18 +4,21 @@
 
 #' Copy the Excel configuration template to a writable location
 #'
-#' @param path Target path for the template workbook.
+#' @param path Target path for the template workbook; `NULL` uses a
+#'   built-in default file name (Chinese, ending in ".xlsx").
 #' @param overwrite Overwrite an existing file.
 #' @return `path`, invisibly.
 #' @examples
-#' f <- file.path(tempdir(), "listr-config.xlsx")
+#' f <- file.path(tempdir(), "listc-config.xlsx")
 #' lst_config_template(f, overwrite = TRUE)
 #' file.exists(f)
 #' @export
-lst_config_template <- function(path = "LISTR\u914d\u7f6e.xlsx", overwrite = FALSE) {
-  src <- system.file("templates", "config-template.xlsx", package = "LISTR")
+lst_config_template <- function(path = NULL, overwrite = FALSE) {
+  # 默认文件名"LISTC配置.xlsx";NULL 哨兵保持 Rd usage 段为 ASCII。
+  if (is.null(path)) path <- "LISTC\u914d\u7f6e.xlsx"
+  src <- system.file("templates", "config-template.xlsx", package = "LISTC")
   if (src == "") {
-    rlang::abort("\u627e\u4e0d\u5230\u5185\u7f6e\u6a21\u677f;\u8bf7\u91cd\u65b0\u5b89\u88c5 LISTR\u3002")
+    rlang::abort("\u627e\u4e0d\u5230\u5185\u7f6e\u6a21\u677f;\u8bf7\u91cd\u65b0\u5b89\u88c5 LISTC\u3002")
   }
   if (file.exists(path) && !overwrite) {
     rlang::abort(paste0("\u6587\u4ef6\u5df2\u5b58\u5728: ", path, "(\u53ef\u7528 overwrite = TRUE \u8986\u76d6)"))

@@ -1,5 +1,5 @@
-# LISTR 使用示例:函数 API(统计人员)与配置 API(lst_run)
-# 运行前: devtools::load_all() 或 library(LISTR)
+# LISTC 使用示例:函数 API(统计人员)与配置 API(lst_run)
+# 运行前: devtools::load_all() 或 library(LISTC)
 
 set.seed(2026)
 n <- 5000

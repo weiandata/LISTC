@@ -17,3 +17,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^realdata$
+^.*\.tar\.gz$
+^LISTC\.Rcheck$

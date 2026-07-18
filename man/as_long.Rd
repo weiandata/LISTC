@@ -2,12 +2,12 @@
 % Please edit documentation in R/pivot.R
 \name{as_long}
 \alias{as_long}
-\title{Extract the tidy long form of a listr_table}
+\title{Extract the tidy long form of a listc_table}
 \usage{
 as_long(tab)
 }
 \arguments{
-\item{tab}{A \code{listr_table}.}
+\item{tab}{A \code{listc_table}.}
 }
 \value{
 A tibble.

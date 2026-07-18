@@ -24,7 +24,7 @@ make_ld <- function(d = sim_data()) {
 
 test_that("lst_data 角色解析与校验", {
   x <- make_ld()
-  expect_s3_class(x, "listr_data")
+  expect_s3_class(x, "listc_data")
   expect_equal(x$roles$theta, c(math = "th"))
   expect_equal(x$roles$weight, "w")
   d <- sim_data()

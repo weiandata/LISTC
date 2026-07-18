@@ -2,7 +2,7 @@
 % Please edit documentation in R/config.R
 \name{lst_config}
 \alias{lst_config}
-\title{Read and validate a LISTR run configuration}
+\title{Read and validate a LISTC run configuration}
 \usage{
 lst_config(config)
 }
@@ -10,7 +10,7 @@ lst_config(config)
 \item{config}{Path to .yml/.yaml/.json, a YAML/JSON string, or a list.}
 }
 \value{
-A validated \code{listr_config} object.
+A validated \code{listc_config} object.
 }
 \description{
 Accepts a YAML/JSON file path, a YAML/JSON string, or a named list.

@@ -15,7 +15,7 @@ lst_table(
 )
 }
 \arguments{
-\item{x}{A \code{listr_data} object.}
+\item{x}{A \code{listc_data} object.}
 
 \item{rows}{Row grouping variables (bare names or character vector).}
 
@@ -30,7 +30,7 @@ lst_table(
 \item{margins}{Add "Total" row/column margins.}
 }
 \value{
-A \code{listr_table} object; see \code{\link[=as_long]{as_long()}} and \code{\link[=as_wide]{as_wide()}}.
+A \code{listc_table} object; see \code{\link[=as_long]{as_long()}} and \code{\link[=as_wide]{as_wide()}}.
 }
 \description{
 Excel-pivot-like interface: declare row variables, column variables and

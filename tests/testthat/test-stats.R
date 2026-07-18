@@ -1,6 +1,6 @@
 make_spec <- function(type, is_prop = FALSE, params = list()) {
   structure(list(type = type, var_quo = NULL, is_prop = is_prop,
-                 params = params), class = "listr_stat")
+                 params = params), class = "listc_stat")
 }
 
 test_that("compute_stat mean 返回正确结构", {
@@ -77,7 +77,7 @@ test_that("加权分位数正确", {
 
 test_that("st_* 构造器捕获变量名", {
   s <- st_mean(math)
-  expect_s3_class(s, "listr_stat")
+  expect_s3_class(s, "listc_stat")
   expect_equal(s$type, "mean")
   expect_error(st_level_prop(x, breaks = c(1, 2)), "命名")
   expect_error(st_level_prop(x, breaks = c(b = 2, a = 1)), "从低到高")

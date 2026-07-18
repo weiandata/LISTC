@@ -1,6 +1,6 @@
 # v1.0 发布流水线:文档 -> 测试 -> as-cran 检查 -> 覆盖率 -> 打包
 # 运行: Rscript scripts/release.R
-# 全部通过后在包根目录生成 LISTR_<version>.tar.gz,可直接上传 CRAN。
+# 全部通过后在包根目录生成 LISTC_<version>.tar.gz,可直接上传 CRAN。
 
 stopifnot(requireNamespace("devtools", quietly = TRUE))
 

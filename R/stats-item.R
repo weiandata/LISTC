@@ -27,7 +27,8 @@ st_pvalue <- function(items = NULL) {
 #'
 #' @param items Character vector of item (resp) columns; `NULL` means all
 #'   declared resp columns.
-#' @param missing_as Label used for missing responses.
+#' @param missing_as Label used for missing responses; `NULL` uses a
+#'   built-in default label (Chinese for "missing").
 #' @return A statistic spec for [lst_table()].
 #' @examples
 #' d <- data.frame(id = 1:50,
@@ -35,7 +36,9 @@ st_pvalue <- function(items = NULL) {
 #' x <- lst_data(d, id = id, resp = q1)
 #' lst_table(x, values = list(opts = st_option_dist(items = "q1")))
 #' @export
-st_option_dist <- function(items = NULL, missing_as = "(\u7f3a\u5931)") {
+st_option_dist <- function(items = NULL, missing_as = NULL) {
+  # \u9ed8\u8ba4\u6807\u7b7e"(\u7f3a\u5931)";NULL \u54e8\u5175\u4fdd\u6301 Rd usage \u6bb5\u4e3a ASCII\u3002
+  if (is.null(missing_as)) missing_as <- "(\u7f3a\u5931)"
   new_stat("option_dist", is_prop = TRUE,
            params = list(items = items, missing_as = missing_as))
 }
