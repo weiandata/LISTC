@@ -10,15 +10,6 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 First public release of the LISTC package (see NEWS.md for the
 user-facing summary). Development milestones below.
 
-### Changed
-
-- Package renamed `LISTR` -> `LISTC` before first release: CRAN already
-  hosts an active package named `listr`, and CRAN policy forbids names
-  differing only in case. The rename covers the package name, the S3
-  classes (`listr_data`/`listr_table`/`listr_config` ->
-  `listc_*`) and the `read_listr()` -> `read_listc()` reader. No version
-  of the package was ever published under the old name.
-
 ### Added
 
 - v1.0 release engineering: runnable `@examples` on all 28 exported
@@ -85,6 +76,13 @@ user-facing summary). Development milestones below.
 - Apply the canonical proprietary notice to the template repository itself.
 
 ### Changed
+
+- Package renamed `LISTR` -> `LISTC` before first release: CRAN already
+  hosts an active package named `listr`, and CRAN policy forbids names
+  differing only in case. The rename covers the package name, the S3
+  classes (`listr_data`/`listr_table`/`listr_config` -> `listc_*`) and
+  the `read_listr()` -> `read_listc()` reader. No version of the package
+  was ever published under the old name.
 
 - Replace the generic license placeholder with deterministic company profile
   selection guidance.
