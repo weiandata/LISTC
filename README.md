@@ -5,12 +5,12 @@
 
 [![R-CMD-check](https://github.com/weiandata/LISTC/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/weiandata/LISTC/actions/workflows/R-CMD-check.yaml)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0)
-[![coverage: 96.3%](https://img.shields.io/badge/coverage-96.3%25-brightgreen.svg)](scripts/coverage.R)
+[![coverage: 96.3%](https://img.shields.io/badge/coverage-96.3%25-brightgreen.svg)](https://github.com/weiandata/LISTC/blob/main/scripts/coverage.R)
 
-**[中文文档 →](README.zh-CN.md)** ·
-[Quick start for non-programmers](docs/guides/quickstart-en.md) ·
-[Advanced guide](docs/guides/advanced-en.md) ·
-[Design document](docs/design-v1.md)
+**[中文文档 →](https://github.com/weiandata/LISTC/blob/main/README.zh-CN.md)** ·
+[Quick start for non-programmers](https://github.com/weiandata/LISTC/blob/main/docs/guides/quickstart-en.md) ·
+[Advanced guide](https://github.com/weiandata/LISTC/blob/main/docs/guides/advanced-en.md) ·
+[Design document](https://github.com/weiandata/LISTC/blob/main/docs/design-v1.md)
 
 LISTC turns assessment and survey microdata — demographics, scores,
 sampling weights, IRT ability estimates with individual standard errors,
@@ -94,7 +94,7 @@ suite (96.3% coverage; core engine files > 95%). A notable result baked
 into the design: for EAP estimates with posterior SDs, probabilistic
 classification is already calibrated — while WLE/ML estimates need the
 `"latent"` empirical-Bayes correction. See
-[design doc §4.1/§6](docs/design-v1.md).
+[design doc §4.1/§6](https://github.com/weiandata/LISTC/blob/main/docs/design-v1.md).
 
 ## Data in, results out
 
@@ -118,9 +118,9 @@ Measured on Apple Silicon (see `scripts/benchmark.R`):
 ## Documentation
 
 * Vignette: `vignette("LISTC-intro")`
-* Non-programmer guides (EN/中文): [docs/guides/](docs/guides/)
+* Non-programmer guides (EN/中文): [docs/guides/](https://github.com/weiandata/LISTC/tree/main/docs/guides/)
 * Design document with all methods and Monte Carlo evidence:
-  [docs/design-v1.md](docs/design-v1.md)
+  [docs/design-v1.md](https://github.com/weiandata/LISTC/blob/main/docs/design-v1.md)
 * For LLM agents: `system.file("llms.txt", package = "LISTC")`
 
 ## License
