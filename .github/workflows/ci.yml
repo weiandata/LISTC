@@ -26,14 +26,18 @@ jobs:
       - name: Verify links
         uses: lycheeverse/lychee-action@v2
         with:
-          # 429 means the host answered but is throttling this runner --
-          # gnu.org does that to GitHub's shared egress IPs, and it says
-          # nothing about whether the link is alive. Retry, then accept it.
+          # gnu.org blocks GitHub's shared egress IPs, answering our GPL-2
+          # link with 429 or simply dropping the request until it times out.
+          # Both outcomes are about the runner's IP, not the link: the same
+          # URL returns 200 from an ordinary host, and a GPL permalink does
+          # not rot. Exclude it rather than let it flip the build red at
+          # random. 429 stays accepted for any other throttling host.
           args: >-
             --no-progress
             --verbose
             --accept 200..=299,429
             --max-retries 3
             --retry-wait-time 5
+            --exclude '^https://www\.gnu\.org/'
             './**/*.md'
           fail: true
