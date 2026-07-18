@@ -37,3 +37,16 @@ Excel-pivot-like interface: declare row variables, column variables and
 cell statistics; every cell carries estimate and SE components
 (sampling + measurement, design doc 6).
 }
+\examples{
+d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+                w = runif(100, 0.5, 2), theta = rnorm(100),
+                se = runif(100, 0.2, 0.4))
+x <- lst_data(d, id = id, group = region, weight = w,
+              theta = c(math = theta), theta_se = c(math = se))
+tab <- lst_table(x, rows = region, values = list(
+  mean = st_mean(math),
+  above = st_prop_above(math, cutoff = 1, method = "prob"),
+  n = st_count()
+), margins = TRUE)
+tab
+}

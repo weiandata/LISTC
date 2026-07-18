@@ -21,3 +21,12 @@ combined SE), and small-sample warnings (n < 30). v0.1 covers scalar
 statistics (mean, sd, prop_above); level/item statistics gain rules
 in v0.2.
 }
+\examples{
+d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+                w = runif(100, 0.5, 2), theta = rnorm(100),
+                se = runif(100, 0.2, 0.4))
+x <- lst_data(d, id = id, group = region, weight = w,
+              theta = c(math = theta), theta_se = c(math = se))
+tab <- lst_table(x, rows = region, values = list(mean = st_mean(math)))
+lst_interpret(tab)
+}

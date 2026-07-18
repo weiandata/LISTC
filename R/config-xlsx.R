@@ -7,6 +7,10 @@
 #' @param path Target path for the template workbook.
 #' @param overwrite Overwrite an existing file.
 #' @return `path`, invisibly.
+#' @examples
+#' f <- file.path(tempdir(), "listr-config.xlsx")
+#' lst_config_template(f, overwrite = TRUE)
+#' file.exists(f)
 #' @export
 lst_config_template <- function(path = "LISTR\u914d\u7f6e.xlsx", overwrite = FALSE) {
   src <- system.file("templates", "config-template.xlsx", package = "LISTR")

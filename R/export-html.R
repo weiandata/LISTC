@@ -11,6 +11,16 @@
 #' @param title Report title.
 #' @param interpret Include the rule-based interpretation section.
 #' @return HTML string, invisibly.
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' tab <- lst_table(x, rows = region, values = list(mean = st_mean(math)))
+#' f <- tempfile(fileext = ".html")
+#' lst_to_html(tab, f, title = "Report")
+#' file.exists(f)
 #' @export
 lst_to_html <- function(tab, path = NULL, title = "\u7edf\u8ba1\u7ed3\u679c",
                         interpret = TRUE) {

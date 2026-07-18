@@ -13,18 +13,65 @@ version (GPL >= 2).
 External runtime dependencies
 -----------------------------
 
-For every direct runtime dependency, record:
-
-Package: [DEPENDENCY]
-Use: [FUNCTIONS OR CAPABILITY USED]
-Upstream project: [AUTHORITATIVE URL]
-License: [VERIFIED UPSTREAM LICENSE]
+Package: data.table
+Use: grouped aggregation engine, fread csv import, dcast pivoting
+Upstream project: https://github.com/Rdatatable/data.table
+License: MPL-2.0
 Bundled source: No
 Copyright: Retained by the upstream copyright holders
 
-The source of separately distributed dependencies is not bundled unless an
-entry explicitly says otherwise. Dependency references do not imply
-endorsement, ownership transfer, or a change to upstream license terms.
+Package: haven
+Use: SPSS/SAS/Stata import with value labels
+Upstream project: https://github.com/tidyverse/haven
+License: MIT + file LICENSE
+Bundled source: No
+Copyright: Retained by the upstream copyright holders
+
+Package: jsonlite
+Use: JSON configuration parsing and JSON result export
+Upstream project: https://github.com/jeroen/jsonlite
+License: MIT + file LICENSE
+Bundled source: No
+Copyright: Retained by the upstream copyright holders
+
+Package: openxlsx
+Use: formatted Excel workbook export
+Upstream project: https://github.com/ycphs/openxlsx
+License: MIT + file LICENSE
+Bundled source: No
+Copyright: Retained by the upstream copyright holders
+
+Package: readxl
+Use: Excel data and configuration-workbook import
+Upstream project: https://github.com/tidyverse/readxl
+License: MIT + file LICENSE
+Bundled source: No
+Copyright: Retained by the upstream copyright holders
+
+Package: rlang
+Use: quasiquotation-based variable capture and condition signalling
+Upstream project: https://github.com/r-lib/rlang
+License: MIT + file LICENSE
+Bundled source: No
+Copyright: Retained by the upstream copyright holders
+
+Package: tibble
+Use: tidy result containers
+Upstream project: https://github.com/tidyverse/tibble
+License: MIT + file LICENSE
+Bundled source: No
+Copyright: Retained by the upstream copyright holders
+
+Package: yaml
+Use: YAML configuration parsing
+Upstream project: https://github.com/vubiostat/r-yaml
+License: BSD_3_clause + file LICENSE
+Bundled source: No
+Copyright: Retained by the upstream copyright holders
+
+The source of separately distributed dependencies is not bundled. Dependency
+references do not imply endorsement, ownership transfer, or a change to
+upstream license terms.
 
 License
 -------

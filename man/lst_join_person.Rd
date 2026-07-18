@@ -20,3 +20,11 @@ lst_join_person(x, person, dim = "theta")
 Merges a person-parameter table (columns id, theta, theta_se) onto the
 data by the declared id role and registers the theta/theta_se roles.
 }
+\examples{
+d <- data.frame(id = c("S001", "S002"), grade = c("G4", "G4"))
+x <- lst_data(d, id = id, group = grade)
+person <- data.frame(id = c("S001", "S002"),
+                     theta = c(0.5, -1.0), theta_se = c(0.4, 0.45))
+x <- lst_join_person(x, person, dim = "math")
+x$roles$theta
+}

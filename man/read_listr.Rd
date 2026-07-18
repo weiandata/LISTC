@@ -22,3 +22,10 @@ xlsx/xls (readxl), sav/zsav/dta/sas7bdat (haven, value labels are
 converted to factors). Use \code{col_select} to load only needed columns
 (design doc 9.1).
 }
+\examples{
+f <- tempfile(fileext = ".csv")
+write.csv(data.frame(id = 1:3, score = c(10, 12, 9)), f,
+          row.names = FALSE)
+read_listr(f)
+read_listr(f, col_select = "score")
+}

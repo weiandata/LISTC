@@ -30,6 +30,13 @@
 #'   `"first"` (PISA manual practice: first PV only) or `"average"`
 #'   (average across all PVs).
 #' @return A `listr_data` object.
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' x
 #' @export
 lst_data <- function(data, id = NULL, group = NULL, weight = NULL,
                      score = NULL, theta = NULL, theta_se = NULL,
@@ -108,6 +115,13 @@ resolve_rep_weights <- function(quo, data) {
 #' Checks role pairing (theta/theta_se), non-negative weights, unique ids.
 #' @param x A `listr_data` object.
 #' @return `x`, invisibly on success.
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' lst_validate(x)
 #' @export
 lst_validate <- function(x) {
   stopifnot(inherits(x, "listr_data"))

@@ -14,6 +14,13 @@
 #' @param id_col,theta_col,se_col Optional column-name overrides.
 #' @return Tibble with columns id, theta, theta_se plus the remaining
 #'   PFILE columns.
+#' @examples
+#' f <- tempfile(fileext = ".txt")
+#' writeLines(c("; PERSON FILE",
+#'              ";ENTRY MEASURE COUNT SCORE ERROR NAME",
+#'              "1 0.52 20 12 0.41 S001",
+#'              "2 -1.03 20 6 0.44 S002"), f)
+#' read_winsteps_pfile(f)
 #' @export
 read_winsteps_pfile <- function(path, id_col = NULL, theta_col = NULL,
                                 se_col = NULL) {
@@ -100,6 +107,11 @@ read_winsteps_pfile <- function(path, id_col = NULL, theta_col = NULL,
 #' @param cols Named integer vector giving 1-based column positions for
 #'   `id`, `theta`, `theta_se`.
 #' @return Tibble with columns id, theta, theta_se.
+#' @examples
+#' f <- tempfile(fileext = ".wle")
+#' writeLines(c("1 S001 12.00 20.00 0.523 0.412",
+#'              "2 S002 6.00 20.00 -1.031 0.437"), f)
+#' read_conquest_person(f)
 #' @export
 read_conquest_person <- function(path,
                                  cols = c(id = 2, theta = 5, theta_se = 6)) {
@@ -145,6 +157,13 @@ read_conquest_person <- function(path,
 #' @param person A data.frame with columns id, theta, theta_se.
 #' @param dim Dimension name for the merged theta (default "theta").
 #' @return `x` with theta/theta_se roles filled.
+#' @examples
+#' d <- data.frame(id = c("S001", "S002"), grade = c("G4", "G4"))
+#' x <- lst_data(d, id = id, group = grade)
+#' person <- data.frame(id = c("S001", "S002"),
+#'                      theta = c(0.5, -1.0), theta_se = c(0.4, 0.45))
+#' x <- lst_join_person(x, person, dim = "math")
+#' x$roles$theta
 #' @export
 lst_join_person <- function(x, person, dim = "theta") {
   stopifnot(inherits(x, "listr_data"))

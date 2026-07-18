@@ -9,6 +9,12 @@
 #' @param col_select Optional character vector of columns to read.
 #' @param ... Passed to the backend reader.
 #' @return A tibble.
+#' @examples
+#' f <- tempfile(fileext = ".csv")
+#' write.csv(data.frame(id = 1:3, score = c(10, 12, 9)), f,
+#'           row.names = FALSE)
+#' read_listr(f)
+#' read_listr(f, col_select = "score")
 #' @export
 read_listr <- function(path, col_select = NULL, ...) {
   if (!file.exists(path)) {

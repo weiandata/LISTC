@@ -69,3 +69,11 @@ to a data frame. Columns can be given as bare names or character
 vectors; theta/theta_se accept named vectors defining dimensions,
 e.g. \code{theta = c(math = th_math)}.
 }
+\examples{
+d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+                w = runif(100, 0.5, 2), theta = rnorm(100),
+                se = runif(100, 0.2, 0.4))
+x <- lst_data(d, id = id, group = region, weight = w,
+              theta = c(math = theta), theta_se = c(math = se))
+x
+}

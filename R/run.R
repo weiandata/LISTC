@@ -7,6 +7,21 @@
 #' @param config Anything accepted by [lst_config()].
 #' @param quiet Suppress progress messages.
 #' @return Invisibly, `list(tables = <named listr_table list>, log = <list>)`.
+#' @examples
+#' csv <- tempfile(fileext = ".csv")
+#' write.csv(data.frame(id = 1:60, g = rep(c("a", "b"), 30),
+#'                      score = rnorm(60, 50, 10)), csv,
+#'           row.names = FALSE)
+#' out <- tempfile(fileext = ".json")
+#' res <- lst_run(list(
+#'   data = csv,
+#'   roles = list(id = "id", group = list("g")),
+#'   tables = list(list(name = "t1", rows = list("g"),
+#'                      values = list(mean = list(stat = "st_mean",
+#'                                                var = "score")))),
+#'   output = list(json = out)
+#' ), quiet = TRUE)
+#' res$log$tables
 #' @export
 lst_run <- function(config, quiet = FALSE) {
   t0 <- Sys.time()

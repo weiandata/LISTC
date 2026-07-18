@@ -396,7 +396,11 @@ jsonlite, yaml, data.table。
   零依赖 lst_to_html() 报告渲染(中文样式+自动解读+方法脚注)、
   配置层/Schema/Excel 模板同步(能力维度 sheet 增 PV 列,
   输出增 HTML)
-- v1.0:CRAN 提交
+- v1.0(2026-07-18 就绪):全部导出函数 @examples、CRAN 元数据
+  (Description 文献引用、NEWS.md、cran-comments.md、COPYRIGHTS
+  依赖清单)、双语 README、双语非编程人员指南
+  (docs/guides/)、scripts/release.R 一键发布流水线;
+  由 maintainer 构建 tarball 提交 CRAN
 
 ## 12. 已决问题(2026-07-18)
 

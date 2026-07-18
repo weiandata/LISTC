@@ -17,3 +17,12 @@ Accepts a YAML/JSON file path, a YAML/JSON string, or a named list.
 Validation errors are reported in plain Chinese pointing to the
 offending field. (Excel configuration workbooks arrive in v0.2.)
 }
+\examples{
+cfg <- lst_config(list(
+  data = "students.csv",
+  roles = list(id = "id", weight = "w"),
+  tables = list(list(name = "t1",
+                     values = list(n = list(stat = "st_count"))))
+))
+class(cfg)
+}

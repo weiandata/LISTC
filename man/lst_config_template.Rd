@@ -17,3 +17,8 @@ lst_config_template(path = "LISTR配置.xlsx", overwrite = FALSE)
 \description{
 Copy the Excel configuration template to a writable location
 }
+\examples{
+f <- file.path(tempdir(), "listr-config.xlsx")
+lst_config_template(f, overwrite = TRUE)
+file.exists(f)
+}

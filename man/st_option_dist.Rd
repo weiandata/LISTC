@@ -18,3 +18,9 @@ A statistic spec for \code{\link[=lst_table]{lst_table()}}.
 \description{
 Weighted item option distribution (including missing rate)
 }
+\examples{
+d <- data.frame(id = 1:50,
+                q1 = sample(c("A", "B", "C", NA), 50, TRUE))
+x <- lst_data(d, id = id, resp = q1)
+lst_table(x, values = list(opts = st_option_dist(items = "q1")))
+}

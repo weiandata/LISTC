@@ -9,6 +9,14 @@
 #' @param tab A `listr_table`.
 #' @param lang Output language; v0.1 supports `"zh"`.
 #' @return Character vector of interpretation sentences.
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' tab <- lst_table(x, rows = region, values = list(mean = st_mean(math)))
+#' lst_interpret(tab)
 #' @export
 lst_interpret <- function(tab, lang = c("zh", "en")) {
   stopifnot(inherits(tab, "listr_table"))

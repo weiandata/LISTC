@@ -22,3 +22,11 @@ header row is located by the presence of a \code{MEASURE} column. The SE
 column is taken from \code{ERROR} (or \code{MODLSE}), the id from \code{NAME}
 (falling back to \code{ENTRY}).
 }
+\examples{
+f <- tempfile(fileext = ".txt")
+writeLines(c("; PERSON FILE",
+             ";ENTRY MEASURE COUNT SCORE ERROR NAME",
+             "1 0.52 20 12 0.41 S001",
+             "2 -1.03 20 6 0.44 S002"), f)
+read_winsteps_pfile(f)
+}

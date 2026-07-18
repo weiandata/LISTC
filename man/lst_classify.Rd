@@ -25,3 +25,12 @@ e.g. \code{c(不及格 = -Inf, 及格 = 0.5, 优秀 = 1.2)}.}
 Boundary convention: reaching a cut score places the person in the
 higher level (\code{x >= lower & x < upper}).
 }
+\examples{
+d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+                w = runif(100, 0.5, 2), theta = rnorm(100),
+                se = runif(100, 0.2, 0.4))
+x <- lst_data(d, id = id, group = region, weight = w,
+              theta = c(math = theta), theta_se = c(math = se))
+x <- lst_classify(x, math, c(low = -Inf, mid = -0.5, high = 0.8))
+table(x$data$math_level)
+}

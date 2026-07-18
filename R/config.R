@@ -13,6 +13,14 @@ VALID_STATS <- c("st_mean", "st_prop_above", "st_level_prop", "st_quantile",
 #'
 #' @param config Path to .yml/.yaml/.json, a YAML/JSON string, or a list.
 #' @return A validated `listr_config` object.
+#' @examples
+#' cfg <- lst_config(list(
+#'   data = "students.csv",
+#'   roles = list(id = "id", weight = "w"),
+#'   tables = list(list(name = "t1",
+#'                      values = list(n = list(stat = "st_count"))))
+#' ))
+#' class(cfg)
 #' @export
 lst_config <- function(config) {
   cfg <- parse_config(config)

@@ -13,6 +13,13 @@ new_stat <- function(type, var_quo = NULL, is_prop = FALSE, params = list()) {
 #' Weighted mean statistic
 #' @param var Measure: a theta/score dimension name or a numeric column.
 #' @return A statistic spec for [lst_table()].
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' lst_table(x, rows = region, values = list(mean = st_mean(math)))
 #' @export
 st_mean <- function(var) {
   new_stat("mean", rlang::enquo(var))
@@ -21,6 +28,13 @@ st_mean <- function(var) {
 #' Weighted standard deviation
 #' @inheritParams st_mean
 #' @return A statistic spec for [lst_table()].
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' lst_table(x, rows = region, values = list(sd = st_sd(math)))
 #' @export
 st_sd <- function(var) {
   new_stat("sd", rlang::enquo(var))
@@ -38,6 +52,16 @@ st_sd <- function(var) {
 #' @param rho Optional reliability for `"latent"`; estimated from the
 #'   data when `NULL`.
 #' @return A statistic spec for [lst_table()].
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' lst_table(x, rows = region, values = list(
+#'   hard = st_prop_above(math, cutoff = 1),
+#'   prob = st_prop_above(math, cutoff = 1, method = "prob")
+#' ))
 #' @export
 st_prop_above <- function(var, cutoff, method = c("hard", "prob"),
                           correction = c("none", "latent"), rho = NULL) {
@@ -51,6 +75,16 @@ st_prop_above <- function(var, cutoff, method = c("hard", "prob"),
 #' @param breaks Named numeric vector: level name -> lower bound,
 #'   e.g. `c(L1 = -Inf, L2 = 0.5, L3 = 1.2)`.
 #' @return A statistic spec for [lst_table()].
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' brk <- c(low = -Inf, mid = -0.5, high = 0.8)
+#' lst_table(x, rows = region, values = list(
+#'   levels = st_level_prop(math, breaks = brk, method = "prob")
+#' ))
 #' @export
 st_level_prop <- function(var, breaks, method = c("hard", "prob"),
                           correction = c("none", "latent"), rho = NULL) {
@@ -71,6 +105,15 @@ st_level_prop <- function(var, breaks, method = c("hard", "prob"),
 #' @inheritParams st_mean
 #' @param probs Quantile probabilities.
 #' @return A statistic spec for [lst_table()].
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' lst_table(x, rows = region, values = list(
+#'   q = st_quantile(math, probs = c(0.25, 0.5, 0.75))
+#' ))
 #' @export
 st_quantile <- function(var, probs = 0.5) {
   new_stat("quantile", rlang::enquo(var), params = list(probs = probs))
@@ -78,6 +121,15 @@ st_quantile <- function(var, probs = 0.5) {
 
 #' Count and weighted-count statistics
 #' @return A statistic spec for [lst_table()].
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' lst_table(x, rows = region, values = list(
+#'   n = st_count(), wn = st_wcount()
+#' ))
 #' @export
 st_count <- function() new_stat("count")
 

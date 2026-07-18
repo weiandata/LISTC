@@ -18,3 +18,11 @@ Requires a scoring key declared in \code{\link[=lst_data]{lst_data()}} (\verb{ke
 vector item -> correct answer. Numeric responses already scored 0/1
 can use \code{key = NULL} items by declaring them directly.
 }
+\examples{
+d <- data.frame(id = 1:50, grp = rep(c("a", "b"), 25),
+                q1 = sample(c("A", "B"), 50, TRUE),
+                q2 = rbinom(50, 1, 0.7))
+x <- lst_data(d, id = id, group = grp, resp = c(q1, q2),
+              key = list(q1 = "A"))
+lst_table(x, rows = grp, values = list(pv = st_pvalue()))
+}

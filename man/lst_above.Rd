@@ -21,3 +21,12 @@ lst_above(x, var, cutoff, name = NULL)
 \description{
 Uses \code{x >= cutoff} (reaching the cut score counts as above).
 }
+\examples{
+d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+                w = runif(100, 0.5, 2), theta = rnorm(100),
+                se = runif(100, 0.2, 0.4))
+x <- lst_data(d, id = id, group = region, weight = w,
+              theta = c(math = theta), theta_se = c(math = se))
+x <- lst_above(x, math, cutoff = 1)
+mean(x$data$math_above)
+}

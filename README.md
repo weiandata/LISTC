@@ -1,133 +1,129 @@
-# LISTR
+# LISTR <img align="right" width="120" alt="" src="">
 
-Large-scale Item-response Statistics Tables in R.
+> **Pivot-style statistical tables for large-scale assessment data —
+> every cell with the right standard error.**
 
-Status: In development (design phase)
+[![R-CMD-check](https://github.com/weiandata/LISTR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/weiandata/LISTR/actions/workflows/R-CMD-check.yaml)
+[![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0)
+[![coverage: 95.9%](https://img.shields.io/badge/coverage-95.9%25-brightgreen.svg)](scripts/coverage.R)
 
-Owner: WEIAN DATA Engineering
+**[中文文档 →](README.zh-CN.md)** ·
+[Quick start for non-programmers](docs/guides/quickstart-en.md) ·
+[Advanced guide](docs/guides/advanced-en.md) ·
+[Design document](docs/design-v1.md)
 
-## Project Overview
+LISTR turns assessment and survey microdata — demographics, scores,
+sampling weights, IRT ability estimates with individual standard errors,
+replicate weights, plausible values — into **Excel-pivot-style tables**
+where you freely choose the row variables, column variables and cell
+statistics, and every cell carries a **design-appropriate standard
+error**.
 
-LISTR is an R package that turns assessment and survey sample data
-(demographics, IDs, item responses, scores, sampling weights, ability
-estimates and their IRT standard errors) into fully customizable,
-Excel-pivot-style statistical tables. Users declare row variables, column
-variables and cell statistics; every cell carries a measurement-sound
-standard error.
+No existing R package combines both halves: survey packages
+(EdSurvey, intsvy, Rrepest, BIFIEsurvey) compute correct statistics but
+offer no free-form table layout; pivot packages (pivottabler) lay out
+tables but know nothing about weights, replicate designs or measurement
+error. LISTR does both, at scale: **5 million respondents, full table
+set, ~10 seconds on a laptop**.
 
-Design document: [docs/design-v1.md](docs/design-v1.md)
+## Installation
 
-## Features (planned, v1)
-
-- Import from CSV/Excel, SPSS/SAS/Stata (with value labels), and IRT
-  software person files (Winsteps PFILE, ConQuest).
-- Weighted means, proportions above cut scores, proficiency-level
-  percentages, quantiles, counts, and item-level statistics
-  (p-values, option distributions).
-- Measurement-error propagation from individual IRT standard errors
-  (sampling + measurement variance components reported separately).
-- Probabilistic level classification robust to measurement error near
-  cut scores.
-- Pivot-table interface (`lst_table()`) producing tidy long and wide
-  layouts, with formatted Excel export.
-- Three audiences, one engine: config-template + `lst_run()` one-shot
-  entry for non-R survey staff, the full function API for statisticians,
-  and JSON output plus `inst/llms.txt` and a config JSON Schema for AI
-  agents. Rule-based plain-language interpretation guards non-experts
-  against misreading standard errors.
-- Million-scale performance: data.table aggregation backend, column
-  pruning on import and per-item chunking, targeting 5M persons on a
-  16GB office laptop.
-
-## Repository Structure
-
-```text
-.
-├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   ├── workflows/
-│   └── PULL_REQUEST_TEMPLATE.md
-├── docs/
-├── examples/
-├── scripts/
-├── templates/licensing/
-├── .editorconfig
-├── .gitignore
-├── CHANGELOG.md
-├── CODEOWNERS
-├── CONTRIBUTING.md
-├── PROPRIETARY.md
-├── README.md
-└── SECURITY.md
+```r
+# install.packages("LISTR")                      # once on CRAN
+# install.packages("remotes")
+remotes::install_github("weiandata/LISTR")       # development version
 ```
 
-Language-native source and test directories belong in the generated
-repository, not in this common template.
+## Quick example
 
-## Getting Started
+```r
+library(LISTR)
 
-1. On GitHub, open this repository and select **Use this template**.
-2. Choose **Create a new repository**.
-3. Enter a lowercase, hyphen-separated repository name and select the correct
-   owner and visibility.
-4. Clone the generated repository and create a short-lived topic branch from
-   `main`.
-5. Select the required files from [licensing profiles](templates/licensing/README.md):
-   R packages use GPL version 2 or later; static websites and WAEF-style
-   frameworks use the proprietary profile.
-6. Add reproducible setup, validation, security, and release automation before
-   the repository is relied on.
-7. Configure branch protection, required checks, and appropriate reviewers in
-   GitHub.
+# 1. Declare what each column means
+x <- lst_data(students,
+  id       = student_id,
+  group    = c(region, gender),
+  weight   = w_final,
+  theta    = c(math = th_math),      # IRT ability estimate
+  theta_se = c(math = se_math)       # its individual standard error
+)
 
-Repository names use lowercase kebab case, for example `irt-engine` or
-`knowledge-base`.
+# 2. Lay out the pivot table: rows, columns, cell statistics
+lv <- c(below = -Inf, basic = -0.5, good = 0.5, excellent = 1.2)
+tab <- lst_table(x,
+  rows = region, cols = gender,
+  values = list(
+    mean      = st_mean(math),
+    excellent = st_prop_above(math, cutoff = 1.2, method = "prob"),
+    levels    = st_level_prop(math, breaks = lv, method = "prob"),
+    n         = st_count()
+  ),
+  margins = TRUE
+)
 
-## Development
+# 3. Use the results
+tab                          # wide layout: "0.52 (0.03)" per cell
+as_long(tab)                 # tidy data with se_sampling / se_measurement
+lst_to_excel(tab, "results.xlsx")
+lst_to_html(tab, "report.html")
+lst_interpret(tab)           # rule-based plain-language conclusions
+```
 
-Changes use short-lived branches named `<category>/<kebab-case-topic>`, such as
-`feature/add-score-export` or `docs/clarify-setup`. Submit changes through a
-pull request and keep `main` releasable. See [CONTRIBUTING.md](CONTRIBUTING.md)
-for commit, review, testing, and evidence requirements.
+## One engine, three audiences
 
-The shared workflow checks Markdown style and links. Generated repositories
-must add the language-specific build, test, dependency, security, and release
-checks required by their project.
+| Audience | Interface | Output |
+| --- | --- | --- |
+| Survey staff (no R) | Fill an **Excel configuration workbook** (`lst_config_template()`), run one line: `lst_run("config.xlsx")` | Styled Excel + auto interpretation sheet, HTML report |
+| Statisticians | Full function API (`lst_data → st_* → lst_table`) | `listr_table` object, tidy long data, all SE components |
+| AI agents / pipelines | YAML/JSON config for `lst_run()`; JSON Schema + `llms.txt` ship in `inst/` | Machine-readable JSON with per-statistic metadata |
+
+## Variance engines
+
+Total variance = sampling + measurement, always reported as separate
+components (`se_sampling`, `se_measurement`, `se_total`).
+
+| Data situation | Declare | Sampling variance | Measurement variance |
+| --- | --- | --- | --- |
+| Simple weighted survey | `weight` | linearized | — |
+| Operational IRT scores | `theta` + `theta_se` | linearized | delta-method propagation of individual SEs; probabilistic classification (`method = "prob"`); EB `correction = "latent"` for WLE/ML |
+| PISA/TIMSS replicate designs | `rep_weights = "W_FSTR"`, `rep_method = "fay"` | BRR/Fay/JK1/JK2 | as above |
+| Plausible values | `pv = list(math = "PV#MATH")` | linearized or replicate | Rubin (1987) combination |
+
+All formulas are validated against Monte Carlo simulations in the test
+suite (95.9% coverage; core engine files > 95%). A notable result baked
+into the design: for EAP estimates with posterior SDs, probabilistic
+classification is already calibrated — while WLE/ML estimates need the
+`"latent"` empirical-Bayes correction. See
+[design doc §4.1/§6](docs/design-v1.md).
+
+## Data in, results out
+
+**In:** csv/tsv (data.table::fread), Excel, SPSS/SAS/Stata with value
+labels (haven), Winsteps PFILE, ConQuest person files.
+**Out:** styled Excel workbooks (Chinese-friendly fonts and widths),
+tidy JSON with computation metadata, standalone HTML reports — each with
+rule-based plain-language interpretation that guards non-experts against
+misreading standard errors.
+
+## Performance
+
+data.table backend, column pruning on import, per-item chunking.
+Measured on Apple Silicon (see `scripts/benchmark.R`):
+
+| Task (50 item columns) | 1M persons | 5M persons |
+| --- | --- | --- |
+| mean + prob proportion + levels, 10×2 with margins | 2.0 s | 10.5 s |
+| 50 item p-values × 10 groups | 1.6 s | 7.7 s |
 
 ## Documentation
 
-- [Documentation index](docs/README.md)
-- [Repository standard summary](docs/repository-standard.md)
-- [Template development guide](docs/Repository_Template_Development_Guide.md)
-- [WeianData Engineering Handbook](https://github.com/weiandata/.github/blob/main/handbook/README.md)
+* Vignette: `vignette("LISTR-intro")`
+* Non-programmer guides (EN/中文): [docs/guides/](docs/guides/)
+* Design document with all methods and Monte Carlo evidence:
+  [docs/design-v1.md](docs/design-v1.md)
+* For LLM agents: `system.file("llms.txt", package = "LISTR")`
 
-The Engineering Handbook is the normative source for engineering rules. This
-template implements safe defaults and does not replace or redefine those
-standards.
+## License
 
-## Repository Lifecycle
-
-Every repository moves through planning, development, testing, release,
-maintenance, and eventual archival. The owner must keep purpose, status,
-validation evidence, supported versions, and maintenance expectations current
-throughout that lifecycle.
-
-## Data and Security
-
-Do not commit credentials, secrets, personal information, restricted client
-data, or unapproved datasets. Use synthetic, public, or explicitly authorized
-fixtures and follow [SECURITY.md](SECURITY.md) for private vulnerability
-reporting.
-
-## Support
-
-Use the repository's issue templates for non-sensitive defects, features, and
-documentation work. Report security concerns only through the private channels
-listed in [SECURITY.md](SECURITY.md).
-
-## Copyright and licensing
-
-Copyright (c) 2026 WEIAN DATA TECH (Beijing) Co., Ltd. All rights reserved.
-This template repository is proprietary; see
-[PROPRIETARY.md](PROPRIETARY.md). Generated repositories must apply the
-[profile-specific assets](templates/licensing/README.md) before publication.
+GPL (>= 2). Copyright (c) 2026 WEIAN DATA TECH (Beijing) Co., Ltd.
+See [inst/COPYRIGHTS](inst/COPYRIGHTS).

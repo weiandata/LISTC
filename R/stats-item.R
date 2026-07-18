@@ -11,6 +11,13 @@
 #' @param items Character vector of item (resp) columns; `NULL` means all
 #'   declared resp columns.
 #' @return A statistic spec for [lst_table()].
+#' @examples
+#' d <- data.frame(id = 1:50, grp = rep(c("a", "b"), 25),
+#'                 q1 = sample(c("A", "B"), 50, TRUE),
+#'                 q2 = rbinom(50, 1, 0.7))
+#' x <- lst_data(d, id = id, group = grp, resp = c(q1, q2),
+#'               key = list(q1 = "A"))
+#' lst_table(x, rows = grp, values = list(pv = st_pvalue()))
 #' @export
 st_pvalue <- function(items = NULL) {
   new_stat("pvalue", is_prop = TRUE, params = list(items = items))
@@ -22,6 +29,11 @@ st_pvalue <- function(items = NULL) {
 #'   declared resp columns.
 #' @param missing_as Label used for missing responses.
 #' @return A statistic spec for [lst_table()].
+#' @examples
+#' d <- data.frame(id = 1:50,
+#'                 q1 = sample(c("A", "B", "C", NA), 50, TRUE))
+#' x <- lst_data(d, id = id, resp = q1)
+#' lst_table(x, values = list(opts = st_option_dist(items = "q1")))
 #' @export
 st_option_dist <- function(items = NULL, missing_as = "(\u7f3a\u5931)") {
   new_stat("option_dist", is_prop = TRUE,

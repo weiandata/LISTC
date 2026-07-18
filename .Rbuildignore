@@ -1,5 +1,7 @@
 ^\.github$
 ^LICENSE$
+^README\.zh-CN\.md$
+^cran-comments\.md$
 ^\.editorconfig$
 ^\.markdownlint-cli2\.yaml$
 ^\.DS_Store$

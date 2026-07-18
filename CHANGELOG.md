@@ -5,9 +5,19 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2026-07-18
+
+First public release of the LISTR package (see NEWS.md for the
+user-facing summary). Development milestones below.
 
 ### Added
+
+- v1.0 release engineering: runnable `@examples` on all 27 exported
+  functions, CRAN metadata (Description with method references, NEWS.md,
+  cran-comments.md, dependency licenses in inst/COPYRIGHTS), bilingual
+  README (English + 简体中文) and bilingual non-programmer guides
+  (quick start + advanced) under docs/guides/, and a one-command
+  release pipeline (`scripts/release.R`).
 
 - Coverage tooling and policy: `scripts/coverage.R` enforcing total
   coverage > 90% and > 95% on core engine files, wired into CI as a

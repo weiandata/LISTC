@@ -21,3 +21,9 @@ output or \code{.wle} files). ConQuest files rarely carry headers, so the
 column positions are declared explicitly and default to the common
 6-column WLE layout: seq, id, score, max, theta, se.
 }
+\examples{
+f <- tempfile(fileext = ".wle")
+writeLines(c("1 S001 12.00 20.00 0.523 0.412",
+             "2 S002 6.00 20.00 -1.031 0.437"), f)
+read_conquest_person(f)
+}

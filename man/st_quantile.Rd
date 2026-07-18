@@ -17,3 +17,13 @@ A statistic spec for \code{\link[=lst_table]{lst_table()}}.
 \description{
 Point estimates only in v0.1 (SE reported as NA; planned for v0.2).
 }
+\examples{
+d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+                w = runif(100, 0.5, 2), theta = rnorm(100),
+                se = runif(100, 0.2, 0.4))
+x <- lst_data(d, id = id, group = region, weight = w,
+              theta = c(math = theta), theta_se = c(math = se))
+lst_table(x, rows = region, values = list(
+  q = st_quantile(math, probs = c(0.25, 0.5, 0.75))
+))
+}

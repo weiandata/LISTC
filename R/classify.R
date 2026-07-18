@@ -10,6 +10,14 @@
 #' @param labels Optional level labels (defaults to names of `breaks`).
 #' @param name Name of the new column (default `<var>_level`).
 #' @return `x` with an ordered-factor level column added.
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' x <- lst_classify(x, math, c(low = -Inf, mid = -0.5, high = 0.8))
+#' table(x$data$math_level)
 #' @export
 lst_classify <- function(x, var, breaks, labels = NULL, name = NULL) {
   stopifnot(inherits(x, "listr_data"))
@@ -34,6 +42,14 @@ lst_classify <- function(x, var, breaks, labels = NULL, name = NULL) {
 #' @param cutoff Numeric threshold.
 #' @param name Name of the new column (default `<var>_above`).
 #' @return `x` with a 0/1 indicator column added.
+#' @examples
+#' d <- data.frame(id = 1:100, region = rep(c("north", "south"), 50),
+#'                 w = runif(100, 0.5, 2), theta = rnorm(100),
+#'                 se = runif(100, 0.2, 0.4))
+#' x <- lst_data(d, id = id, group = region, weight = w,
+#'               theta = c(math = theta), theta_se = c(math = se))
+#' x <- lst_above(x, math, cutoff = 1)
+#' mean(x$data$math_above)
 #' @export
 lst_above <- function(x, var, cutoff, name = NULL) {
   stopifnot(inherits(x, "listr_data"))
@@ -49,6 +65,11 @@ lst_above <- function(x, var, cutoff, name = NULL) {
 #' @param x A `listr_data` object.
 #' @param ... Name-value expressions evaluated in the data.
 #' @return `x` with derived columns added.
+#' @examples
+#' d <- data.frame(id = 1:5, part1 = 1:5, part2 = 6:10)
+#' x <- lst_data(d, id = id)
+#' x <- lst_derive(x, total = part1 + part2)
+#' x$data$total
 #' @export
 lst_derive <- function(x, ...) {
   stopifnot(inherits(x, "listr_data"))

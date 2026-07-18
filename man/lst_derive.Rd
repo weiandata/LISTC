@@ -17,3 +17,9 @@ lst_derive(x, ...)
 \description{
 Add arbitrary derived variables (mutate-style)
 }
+\examples{
+d <- data.frame(id = 1:5, part1 = 1:5, part2 = 6:10)
+x <- lst_data(d, id = id)
+x <- lst_derive(x, total = part1 + part2)
+x$data$total
+}
