@@ -1,0 +1,41 @@
+Package: LISTR
+Type: Package
+Title: Large-Scale Item-Response Statistics Tables
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Kunxiang", "Ma", role = c("aut", "cre"),
+           email = "makunxiang@weiandata.com"),
+    person("WEIAN DATA TECH (Beijing) Co., Ltd.",
+           role = c("cph", "fnd"), email = "contact@weiandata.com"))
+Description: Turns assessment and survey sample data (demographics, scores,
+    weights, ability estimates and their IRT standard errors) into fully
+    customizable pivot-style statistical tables. Provides weighted means,
+    proportions above cut scores and proficiency-level percentages with
+    measurement-error propagation from individual IRT standard errors,
+    plus import from CSV, Excel, SPSS, SAS, Stata and IRT software person
+    files, and formatted Excel export.
+License: GPL (>= 2)
+Copyright: See file inst/COPYRIGHTS.
+Encoding: UTF-8
+Language: zh-CN
+Depends: R (>= 4.1)
+Imports:
+    data.table,
+    haven,
+    jsonlite,
+    openxlsx,
+    readxl,
+    rlang,
+    stats,
+    tibble,
+    yaml
+Suggests:
+    knitr,
+    readr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+URL: https://github.com/weiandata/LISTR
+BugReports: https://github.com/weiandata/LISTR/issues
+Config/roxygen2/version: 8.0.0

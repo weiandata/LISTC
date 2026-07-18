@@ -1,0 +1,34 @@
+LISTR copyright and licensing notice
+=========================================
+
+Copyright (C) 2026 WEIAN DATA TECH (Beijing) Co., Ltd.
+(惟安数据科技（北京）有限公司)
+Contact: contact@weiandata.com
+
+LISTR source code, documentation, tests, and bundled synthetic data are
+copyrighted by WEIAN DATA TECH (Beijing) Co., Ltd. and distributed under the
+GNU General Public License version 2 or, at the recipient's option, any later
+version (GPL >= 2).
+
+External runtime dependencies
+-----------------------------
+
+For every direct runtime dependency, record:
+
+Package: [DEPENDENCY]
+Use: [FUNCTIONS OR CAPABILITY USED]
+Upstream project: [AUTHORITATIVE URL]
+License: [VERIFIED UPSTREAM LICENSE]
+Bundled source: No
+Copyright: Retained by the upstream copyright holders
+
+The source of separately distributed dependencies is not bundled unless an
+entry explicitly says otherwise. Dependency references do not imply
+endorsement, ownership transfer, or a change to upstream license terms.
+
+License
+-------
+
+The complete LISTR package is distributed under the GNU General Public
+License version 2 or, at the recipient's option, any later version (GPL >= 2).
+Copyright in external dependencies remains with their respective holders.

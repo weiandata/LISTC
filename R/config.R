@@ -1,0 +1,104 @@
+# Config layer: one mechanism serving both non-R users and AI agents.
+# Schema: inst/schema/config.schema.json. See design doc section 1.1.
+
+VALID_STATS <- c("st_mean", "st_prop_above", "st_level_prop", "st_quantile",
+                 "st_sd", "st_count", "st_wcount", "st_pvalue",
+                 "st_option_dist")
+
+#' Read and validate a LISTR run configuration
+#'
+#' Accepts a YAML/JSON file path, a YAML/JSON string, or a named list.
+#' Validation errors are reported in plain Chinese pointing to the
+#' offending field. (Excel configuration workbooks arrive in v0.2.)
+#'
+#' @param config Path to .yml/.yaml/.json, a YAML/JSON string, or a list.
+#' @return A validated `listr_config` object.
+#' @export
+lst_config <- function(config) {
+  cfg <- parse_config(config)
+  # --- 校验,错误信息面向非技术用户 ---
+  need <- function(cond, msg) if (!isTRUE(cond)) rlang::abort(msg)
+  need(is.list(cfg), "\u914d\u7f6e\u5fc5\u987b\u662f\u4e00\u7ec4\u952e\u503c(YAML/JSON \u5bf9\u8c61)\u3002")
+  need(!is.null(cfg$data) && is.character(cfg$data),
+       "\u914d\u7f6e\u7f3a\u5c11 data:\u8bf7\u586b\u5199\u6570\u636e\u6587\u4ef6\u8def\u5f84\u3002")
+  need(is.list(cfg$roles),
+       "\u914d\u7f6e\u7f3a\u5c11 roles:\u8bf7\u8bf4\u660e\u6bcf\u4e2a\u53d8\u91cf\u7684\u89d2\u8272(id\u3001weight\u3001group \u7b49)\u3002")
+  need(!is.null(cfg$roles$id),
+       "roles \u91cc\u7f3a\u5c11 id:\u8bf7\u586b\u5199\u6837\u672c\u7f16\u53f7\u5217\u7684\u5217\u540d\u3002")
+  if (!is.null(cfg$roles$theta) || !is.null(cfg$roles$theta_se)) {
+    nt <- names(cfg$roles$theta)
+    ns <- names(cfg$roles$theta_se)
+    need(!is.null(nt) && !is.null(ns) && setequal(nt, ns),
+         paste0("roles \u91cc\u7684 theta \u4e0e theta_se \u5fc5\u987b\u4f7f\u7528\u76f8\u540c\u7684\u7ef4\u5ea6\u540d,",
+                "\u4f8b\u5982 theta: {math: th_math} \u914d theta_se: {math: se_math}\u3002"))
+  }
+  need(is.list(cfg$tables) && length(cfg$tables) > 0,
+       "\u914d\u7f6e\u7f3a\u5c11 tables:\u8bf7\u81f3\u5c11\u5b9a\u4e49\u4e00\u5f20\u7edf\u8ba1\u8868\u3002")
+  for (i in seq_along(cfg$tables)) {
+    tb <- cfg$tables[[i]]
+    where <- paste0("\u7b2c ", i, " \u5f20\u8868")
+    need(!is.null(tb$name), paste0(where, " \u7f3a\u5c11 name(\u8868\u540d)\u3002"))
+    need(is.list(tb$values) && length(tb$values) > 0 &&
+           !is.null(names(tb$values)),
+         paste0(where, "(", tb$name %||% "", ")\u7f3a\u5c11 values:",
+                "\u8bf7\u5b9a\u4e49\u8981\u8ba1\u7b97\u7684\u7edf\u8ba1\u91cf,\u5e76\u7ed9\u6bcf\u4e2a\u7edf\u8ba1\u91cf\u547d\u540d\u3002"))
+    for (vn in names(tb$values)) {
+      v <- tb$values[[vn]]
+      stat <- v$stat
+      need(!is.null(stat) && stat %in% VALID_STATS,
+           paste0(where, " \u7684\u7edf\u8ba1\u91cf \"", vn, "\" \u7684 stat \u65e0\u6548: ",
+                  stat %||% "(\u672a\u586b\u5199)", "\u3002\u53ef\u9009: ",
+                  paste(VALID_STATS, collapse = ", ")))
+      if (stat %in% c("st_mean", "st_sd", "st_prop_above", "st_level_prop",
+                      "st_quantile")) {
+        need(!is.null(v$var),
+             paste0(where, " \u7684\u7edf\u8ba1\u91cf \"", vn, "\" \u7f3a\u5c11 var(\u7b97\u54ea\u4e2a\u53d8\u91cf)\u3002"))
+      }
+      if (stat == "st_prop_above") {
+        need(is.numeric(v$cutoff),
+             paste0(where, " \u7684\u7edf\u8ba1\u91cf \"", vn, "\" \u7f3a\u5c11\u6570\u503c\u578b cutoff(\u9608\u503c)\u3002"))
+      }
+      if (stat == "st_level_prop") {
+        need(is.list(v$breaks) || (is.numeric(v$breaks) &&
+                                     !is.null(names(v$breaks))),
+             paste0(where, " \u7684\u7edf\u8ba1\u91cf \"", vn,
+                    "\" \u7f3a\u5c11 breaks(\u7b49\u7ea7\u540d: \u4e0b\u754c)\u3002"))
+      }
+    }
+    if (!is.null(tb$format)) {
+      need(tb$format %in% c("est", "est_se", "est_ci", "percent"),
+           paste0(where, " \u7684 format \u65e0\u6548: ", tb$format,
+                  "\u3002\u53ef\u9009: est, est_se, est_ci, percent\u3002"))
+    }
+  }
+  structure(cfg, class = "listr_config")
+}
+
+parse_config <- function(config) {
+  if (inherits(config, "listr_config")) {
+    return(unclass(config))
+  }
+  if (is.list(config)) {
+    return(config)
+  }
+  if (is.character(config) && length(config) == 1) {
+    if (file.exists(config)) {
+      ext <- tolower(tools::file_ext(config))
+      return(switch(ext,
+        yml = ,
+        yaml = yaml::read_yaml(config),
+        json = jsonlite::fromJSON(config, simplifyVector = TRUE,
+                                  simplifyDataFrame = FALSE),
+        xlsx = rlang::abort(
+          "Excel \u914d\u7f6e\u7c3f\u5c06\u5728 v0.2 \u652f\u6301;\u5f53\u524d\u8bf7\u4f7f\u7528 YAML \u6216 JSON \u914d\u7f6e\u3002"),
+        rlang::abort(paste0("\u65e0\u6cd5\u8bc6\u522b\u7684\u914d\u7f6e\u6587\u4ef6\u683c\u5f0f: .", ext))
+      ))
+    }
+    if (grepl("^\\s*\\{", config)) {
+      return(jsonlite::fromJSON(config, simplifyVector = TRUE,
+                                simplifyDataFrame = FALSE))
+    }
+    return(yaml::yaml.load(config))
+  }
+  rlang::abort("config \u5fc5\u987b\u662f\u914d\u7f6e\u6587\u4ef6\u8def\u5f84\u3001YAML/JSON \u6587\u672c\u6216\u5217\u8868\u3002")
+}

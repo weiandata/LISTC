@@ -8,3 +8,12 @@ Thumbs.db
 
 # Local environment and secrets
 .env
+
+# R
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rcheck/
+LISTR_*.tar.gz
+inst/doc

@@ -1,0 +1,64 @@
+# LISTR — Large-scale Item-response Statistics Tables in R
+
+LISTR turns assessment/survey sample data (demographics, weights, scores,
+ability estimates theta with individual IRT standard errors, item responses)
+into pivot-style statistical tables. Every cell carries an estimate and a
+standard error combining sampling variance and measurement variance
+propagated from individual IRT SEs.
+
+## Recommended interface for agents
+
+Generate a YAML or JSON configuration and call:
+
+    library(LISTR)
+    result <- lst_run("config.yml")
+
+Config schema: inst/schema/config.schema.json (validate before running).
+Minimal config:
+
+    data: students.sav          # csv/xlsx/sav/dta/sas7bdat
+    roles:
+      id: student_id
+      weight: w_final
+      group: [region, gender]
+      theta: {math: th_math}
+      theta_se: {math: se_math}
+    tables:
+      - name: mean_by_region
+        rows: [region]
+        cols: [gender]
+        values:
+          mean: {stat: st_mean, var: math}
+          excellent: {stat: st_prop_above, var: math, cutoff: 1.2,
+                      method: prob}
+        format: est_se
+    output:
+      xlsx: results.xlsx
+      json: results.json
+
+The JSON output contains: tidy long results (group combination x statistic
+x estimate/se_sampling/se_measurement/se_total), per-statistic metadata
+(method, n, sum of weights), and an `interpretation` field with rule-based
+plain-language conclusions.
+
+## Function-level API (alternative)
+
+    d <- lst_data(df, id=, group=, weight=, theta=, theta_se=, resp=, key=)
+    tab <- lst_table(d, rows=, cols=, values=list(...), format="est_se")
+    as_long(tab); as_wide(tab)
+    lst_to_excel(tab, "out.xlsx"); lst_to_json(tab)
+
+Statistics: st_mean, st_prop_above, st_level_prop, st_quantile, st_sd,
+st_count, st_wcount, st_pvalue (item p-values), st_option_dist.
+method="prob" uses each person's theta SE for probabilistic classification.
+correction: use "none" when theta is an EAP estimate with posterior SD
+(already calibrated); use "latent" when theta is a WLE/ML estimate with
+sampling SE (empirical-Bayes shrinkage to the latent distribution;
+supply rho or let LISTR estimate reliability from the data).
+
+## Cautions
+
+- theta and theta_se must be paired per dimension.
+- correction="latent" is for WLE/ML estimates only; EAP needs "none".
+- SEs assume independent measurement errors across persons; replicate
+  weights and plausible values are planned for later versions.

@@ -1,35 +1,43 @@
-# WeianData Repository Template
+# LISTR
 
-The official language-independent starting point for repositories owned or
-maintained by WeianData.
+Large-scale Item-response Statistics Tables in R.
 
-Status: Active
+Status: In development (design phase)
 
 Owner: WEIAN DATA Engineering
 
 ## Project Overview
 
-This repository is the golden template for new WeianData software, research,
-documentation, SDK, AI, infrastructure, and static-site repositories. It
-provides the common governance and documentation baseline without choosing a
-programming language, framework, package manager, or deployment model.
+LISTR is an R package that turns assessment and survey sample data
+(demographics, IDs, item responses, scores, sampling weights, ability
+estimates and their IRT standard errors) into fully customizable,
+Excel-pivot-style statistical tables. Users declare row variables, column
+variables and cell statistics; every cell carries a measurement-sound
+standard error.
 
-After creating a repository from this template, replace this overview with the
-new project's purpose, audience, status, owner, supported use cases, and
-non-goals.
+Design document: [docs/design-v1.md](docs/design-v1.md)
 
-## Features
+## Features (planned, v1)
 
-- A predictable, AI-friendly repository structure.
-- Issue and pull request templates for reviewable work.
-- Language-neutral Markdown and link checks.
-- Contribution, security, versioning, and ownership defaults.
-- Dedicated locations for documentation, examples, and utility scripts.
-
-This template intentionally contains no business logic, source layout, test
-layout, dependency manifest, dataset, container configuration, or
-language-specific automation. Add only the components required by the new
-project and its selected operating mode.
+- Import from CSV/Excel, SPSS/SAS/Stata (with value labels), and IRT
+  software person files (Winsteps PFILE, ConQuest).
+- Weighted means, proportions above cut scores, proficiency-level
+  percentages, quantiles, counts, and item-level statistics
+  (p-values, option distributions).
+- Measurement-error propagation from individual IRT standard errors
+  (sampling + measurement variance components reported separately).
+- Probabilistic level classification robust to measurement error near
+  cut scores.
+- Pivot-table interface (`lst_table()`) producing tidy long and wide
+  layouts, with formatted Excel export.
+- Three audiences, one engine: config-template + `lst_run()` one-shot
+  entry for non-R survey staff, the full function API for statisticians,
+  and JSON output plus `inst/llms.txt` and a config JSON Schema for AI
+  agents. Rule-based plain-language interpretation guards non-experts
+  against misreading standard errors.
+- Million-scale performance: data.table aggregation backend, column
+  pruning on import and per-item chunking, targeting 5M persons on a
+  16GB office laptop.
 
 ## Repository Structure
 

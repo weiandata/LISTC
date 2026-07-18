@@ -1,0 +1,36 @@
+# LISTR 配置示例:填好后运行 lst_run("config-example.yml")
+# 完整字段说明见 inst/schema/config.schema.json
+
+data: students.csv          # 支持 csv/tsv/xlsx/sav/dta/sas7bdat
+
+roles:
+  id: student_id            # 样本编号列
+  weight: w_final           # 抽样权重列(可省略,默认等权)
+  group: [region, gender]   # 人口学/分组变量
+  theta: {math: th_math}    # 能力值列,按维度命名
+  theta_se: {math: se_math} # 与 theta 配对的标准误列
+
+tables:
+  - name: 区域x性别
+    rows: [region]
+    cols: [gender]
+    margins: true           # 追加"合计"行列
+    format: est_se          # est | est_se | est_ci | percent
+    digits: 2
+    values:
+      平均能力: {stat: st_mean, var: math}
+      优秀率:
+        stat: st_prop_above
+        var: math
+        cutoff: 1.2
+        method: prob        # 概率化:利用每人的 IRT 标准误
+      等级分布:
+        stat: st_level_prop
+        var: math
+        method: prob
+        breaks: {待提高: -.inf, 合格: -0.5, 良好: 0.5, 优秀: 1.2}
+      人数: {stat: st_count}
+
+output:
+  xlsx: results.xlsx        # 含"结论"sheet 的中文样式透视表
+  json: results.json        # 机器可读结果(供 AI agent / 二次分析)

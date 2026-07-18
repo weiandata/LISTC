@@ -1,0 +1,16 @@
+^\.github$
+^LICENSE$
+^\.editorconfig$
+^\.markdownlint-cli2\.yaml$
+^\.DS_Store$
+^CODEOWNERS$
+^CONTRIBUTING\.md$
+^SECURITY\.md$
+^PROPRIETARY\.md$
+^CHANGELOG\.md$
+^docs$
+^examples$
+^scripts$
+^templates$
+^.*\.Rproj$
+^\.Rproj\.user$

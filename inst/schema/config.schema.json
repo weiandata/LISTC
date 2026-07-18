@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/weiandata/LISTR/inst/schema/config.schema.json",
+  "title": "LISTR run configuration",
+  "type": "object",
+  "required": ["data", "roles", "tables"],
+  "properties": {
+    "data": {
+      "type": "string",
+      "description": "Path to csv/tsv/xlsx/sav/dta/sas7bdat data file"
+    },
+    "roles": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string" },
+        "weight": { "type": "string" },
+        "group": { "type": "array", "items": { "type": "string" } },
+        "score": { "type": "array", "items": { "type": "string" } },
+        "theta": { "type": "object", "additionalProperties": { "type": "string" } },
+        "theta_se": { "type": "object", "additionalProperties": { "type": "string" } },
+        "resp": { "type": "array", "items": { "type": "string" } },
+        "key": { "type": "object", "additionalProperties": true }
+      }
+    },
+    "tables": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "values"],
+        "properties": {
+          "name": { "type": "string" },
+          "rows": { "type": "array", "items": { "type": "string" } },
+          "cols": { "type": "array", "items": { "type": "string" } },
+          "values": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": ["stat"],
+              "properties": {
+                "stat": {
+                  "enum": ["st_mean", "st_prop_above", "st_level_prop",
+                           "st_quantile", "st_sd", "st_count", "st_wcount",
+                           "st_pvalue", "st_option_dist"]
+                },
+                "var": { "type": "string" },
+                "cutoff": { "type": "number" },
+                "breaks": { "type": "object", "additionalProperties": { "type": "number" } },
+                "probs": { "type": "array", "items": { "type": "number" } },
+                "method": { "enum": ["hard", "prob"] },
+                "correction": { "enum": ["none", "latent"] },
+                "rho": { "type": "number" }
+              }
+            }
+          },
+          "format": { "enum": ["est", "est_se", "est_ci", "percent"] },
+          "digits": { "type": "integer" },
+          "margins": { "type": "boolean" }
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "xlsx": { "type": "string" },
+        "json": { "type": "string" }
+      }
+    }
+  }
+}
