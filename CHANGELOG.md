@@ -9,6 +9,21 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- Coverage tooling and policy: `scripts/coverage.R` enforcing total
+  coverage > 90% and > 95% on core engine files, wired into CI as a
+  dedicated job; branch/error-path test suites (test-branches,
+  test-exports) and an optional real-data smoke test
+  (`tests/testthat/test-realdata.R`, skipped when `realdata/` absent;
+  the directory is git- and build-ignored per data policy) plus
+  `scripts/realdata-run.R` for the full pipeline on the 378k-row
+  monitoring dataset.
+
+### Fixed
+
+- `lst_validate()` no longer treats missing ids as duplicates; missing
+  ids now produce an informative message with the missing share
+  (surfaced by the real dataset, 4.85% missing IDs).
+
 - v0.4: plausible-values engine with Rubin combination (`pv` role with
   `PV#MATH` template expansion, `pv_sampling` first/average, composes
   with the replicate-weights engine for the full PISA variance recipe;

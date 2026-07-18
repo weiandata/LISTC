@@ -17,3 +17,6 @@ Thumbs.db
 *.Rcheck/
 LISTR_*.tar.gz
 inst/doc
+
+# Restricted client data - never commit
+/realdata/

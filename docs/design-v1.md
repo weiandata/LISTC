@@ -370,6 +370,13 @@ jsonlite, yaml, data.table。
 - 性能基准:合成 100 万/500 万人数据集(含 200 作答列),
   bench 记录典型任务耗时与峰值内存,回归门槛进 CI;
   16GB 环境验收:500 万人全套表 < 5 分钟、峰值 < 8GB
+- 覆盖率要求(2026-07-18 起):总体 > 90%,核心文件
+  (utils/spec/stats/stats-item/variance*/table/pivot)> 95%;
+  `Rscript scripts/coverage.R` 本地检查,CI coverage job 强制
+- 真实数据:realdata/(37.8 万行监测数据,不进 git/不进包)
+  由 test-realdata.R 冒烟(目录存在才跑)+
+  scripts/realdata-run.R 完整试跑;已暴露并修复 id 缺失
+  误判重复的 bug,发现"扩展名被后缀破坏"的导入场景
 
 ## 11. 路线图
 

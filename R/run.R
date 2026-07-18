@@ -20,7 +20,7 @@ lst_run <- function(config, quiet = FALSE) {
       vapply(tb$values, function(v) v$var %||% NA_character_, character(1)))
   }), use.names = FALSE)
   used_vars <- setdiff(stats::na.omit(used_vars),
-                       c(names(r$theta), names(r$score), names(r$pv)))
+                       c(names(r$theta), names(r$score), names(r[["pv"]])))
   needs_items <- any(unlist(lapply(cfg$tables, function(tb) {
     vapply(tb$values, function(v) v$stat %in% c("st_pvalue", "st_option_dist"),
            logical(1))
@@ -55,9 +55,9 @@ lst_run <- function(config, quiet = FALSE) {
       }
     }
   }
-  if (!is.null(r$pv) && !is.null(cols)) {
-    for (dim in names(r$pv)) {
-      v <- as.character(unlist(r$pv[[dim]]))
+  if (!is.null(r[["pv"]]) && !is.null(cols)) { # [[ 避免部分匹配 pv_sampling
+    for (dim in names(r[["pv"]])) {
+      v <- as.character(unlist(r[["pv"]][[dim]]))
       if (length(v) == 1 && grepl("#", v, fixed = TRUE)) {
         hdr <- peek_header()
         if (is.null(hdr)) {
@@ -83,7 +83,7 @@ lst_run <- function(config, quiet = FALSE) {
   roles_theta_se <- unlist(r$theta_se)
   roles_resp <- unlist(r$resp)
   roles_repw <- unlist(r$rep_weights)
-  roles_pv <- r$pv
+  roles_pv <- r[["pv"]]
   if (!is.null(roles_pv)) {
     roles_pv <- lapply(roles_pv, function(v) as.character(unlist(v)))
   }
@@ -96,7 +96,7 @@ lst_run <- function(config, quiet = FALSE) {
     rep_method = r$rep_method,
     fay_k = r$fay_k %||% 0.5,
     pv = roles_pv,
-    pv_sampling = r$pv_sampling %||% "first"
+    pv_sampling = r[["pv_sampling"]] %||% "first"
   )
 
   tables <- list()

@@ -38,13 +38,14 @@ lst_config <- function(config) {
          paste0("\u4f7f\u7528\u590d\u5236\u6743\u91cd(rep_weights)\u5fc5\u987b\u540c\u65f6\u586b\u5199 rep_method,",
                 "\u53ef\u9009: fay(PISA)\u3001brr\u3001jk1\u3001jk2(TIMSS)\u3002"))
   }
-  if (!is.null(cfg$roles$pv)) {
-    need(is.list(cfg$roles$pv) && !is.null(names(cfg$roles$pv)),
+  # \u6ce8\u610f\u7528 [[ \u7cbe\u786e\u53d6\u503c:$pv \u4f1a\u90e8\u5206\u5339\u914d\u5230 pv_sampling
+  if (!is.null(cfg$roles[["pv"]])) {
+    need(is.list(cfg$roles[["pv"]]) && !is.null(names(cfg$roles[["pv"]])),
          paste0("roles \u91cc\u7684 pv \u5fc5\u987b\u662f\u547d\u540d\u6620\u5c04:\u7ef4\u5ea6\u540d -> PV \u5217,",
                 "\u5982 pv: {math: \"PV#MATH\"}\u3002"))
   }
-  if (!is.null(cfg$roles$pv_sampling)) {
-    need(cfg$roles$pv_sampling %in% c("first", "average"),
+  if (!is.null(cfg$roles[["pv_sampling"]])) {
+    need(cfg$roles[["pv_sampling"]] %in% c("first", "average"),
          "pv_sampling \u53ea\u80fd\u662f first \u6216 average\u3002")
   }
   need(is.list(cfg$tables) && length(cfg$tables) > 0,

@@ -121,6 +121,39 @@ test_that("lst_table 走 replicate 引擎并记录方法", {
   expect_true(all(long$se_sampling[long$statistic == "正答率"] >= 0))
 })
 
+test_that("rep 引擎覆盖全部统计量分支(带/不带个体 SE)", {
+  set.seed(71)
+  n <- 300
+  d <- data.frame(sid = seq_len(n), g = sample(c("A", "B"), n, TRUE),
+                  w = runif(n, .5, 2), th = rnorm(n),
+                  se = runif(n, .2, .4))
+  for (r in 1:6) d[[paste0("rw", r)]] <- d$w * runif(n, .5, 1.5)
+  x <- lst_data(d, id = sid, group = g, weight = w,
+                theta = c(m = th), theta_se = c(m = se),
+                rep_weights = "rw", rep_method = "jk1")
+  brk <- c(L = -Inf, M = -0.5, H = 0.8)
+  tab <- lst_table(x, rows = g, values = list(
+    标准差 = st_sd(m),                                # meas_var 默认 0 分支
+    分位数 = st_quantile(m, probs = c(.25, .75)),      # 带 se 的 quantile 分支
+    硬占比 = st_prop_above(m, cutoff = 1),             # prop hard + se
+    概率等级 = st_level_prop(m, breaks = brk, method = "prob"),
+    硬等级 = st_level_prop(m, breaks = brk)
+  ))
+  long <- as_long(tab)
+  # 全部统计量走 replicate 路径且 SE 有限
+  expect_true(all(is.finite(long$se_sampling)))
+  # 硬分类统计量无测量分量;概率等级有
+  expect_true(all(long$se_measurement[long$statistic == "硬等级"] == 0))
+  expect_true(all(long$se_measurement[long$statistic == "概率等级"] > 0))
+  expect_true(all(long$se_measurement[long$statistic == "标准差"] == 0))
+  expect_true(all(long$se_measurement[long$statistic == "分位数"] == 0))
+  # 等级占比和为 1
+  for (m_stat in c("概率等级", "硬等级")) {
+    s <- long[long$statistic == m_stat & long$g == "A", ]
+    expect_equal(sum(s$estimate), 1, tolerance = 1e-9)
+  }
+})
+
 test_that("配置层支持复制权重(YAML)", {
   set.seed(13)
   n <- 200

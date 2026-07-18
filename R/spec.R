@@ -141,7 +141,16 @@ lst_validate <- function(x) {
     if (any(w < 0, na.rm = TRUE)) rlang::abort("\u6743\u91cd\u5217\u5305\u542b\u8d1f\u503c\u3002")
   }
   if (!is.null(r$id)) {
-    if (anyDuplicated(d[[r$id]]) > 0) {
+    idv <- d[[r$id]]
+    n_na <- sum(is.na(idv))
+    if (n_na > 0) {
+      rlang::inform(paste0(
+        "\u63d0\u793a: id \u5217\u6709 ", n_na, " \u4e2a\u7f3a\u5931\u503c(\u5360 ",
+        sprintf("%.1f%%", 100 * n_na / length(idv)),
+        ")\u3002\u7f3a\u5931 id \u4e0d\u5f71\u54cd\u7edf\u8ba1,\u4f46\u65e0\u6cd5\u7528\u4e8e lst_join_person \u5408\u5e76\u3002"
+      ))
+    }
+    if (anyDuplicated(idv[!is.na(idv)]) > 0) {
       rlang::abort("id \u5217\u5b58\u5728\u91cd\u590d\u503c,\u6837\u672c\u6807\u8bc6\u5fc5\u987b\u552f\u4e00\u3002")
     }
   }
