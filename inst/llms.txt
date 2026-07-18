@@ -72,6 +72,23 @@ from individual SEs is still added on top):
       rep_method: fay         # fay (PISA) | brr | jk1 | jk2 (TIMSS)
       fay_k: 0.5              # fay only, default 0.5
 
+## Plausible values (v0.4)
+
+Declare PVs and all statistics on that dimension use Rubin combination
+(total variance = sampling U + (1+1/M)*B imputation). Combine with
+rep_weights for the full PISA variance recipe:
+
+    roles:
+      pv: {math: "PV#MATH"}   # '#' = PV number, expands to PV1MATH..
+      pv_sampling: first      # first (PISA manual) | average
+      rep_weights: W_FSTR
+      rep_method: fay
+
+Do NOT use method: prob on PV dimensions (they already carry
+measurement uncertainty; use hard classification, Rubin handles the
+rest). Output option `html:` writes a styled standalone report
+(lst_to_html, dependency-free).
+
 ## Cautions
 
 - theta and theta_se must be paired per dimension.

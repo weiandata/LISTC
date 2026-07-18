@@ -22,12 +22,20 @@
 #' @param rep_method Replicate method: `"fay"` (PISA BRR-Fay),
 #'   `"brr"`, `"jk1"`, or `"jk2"` (TIMSS). Required with `rep_weights`.
 #' @param fay_k Fay factor for `rep_method = "fay"` (default 0.5).
+#' @param pv Plausible values (v0.4): named list, dimension -> PV columns
+#'   or a template with `#` for the PV number, e.g.
+#'   `pv = list(math = "PV#MATH")` expands to PV1MATH..PV10MATH.
+#'   PV dimensions are analyzed with Rubin combination.
+#' @param pv_sampling Sampling-variance convention for PV dimensions:
+#'   `"first"` (PISA manual practice: first PV only) or `"average"`
+#'   (average across all PVs).
 #' @return A `listr_data` object.
 #' @export
 lst_data <- function(data, id = NULL, group = NULL, weight = NULL,
                      score = NULL, theta = NULL, theta_se = NULL,
                      resp = NULL, key = NULL,
-                     rep_weights = NULL, rep_method = NULL, fay_k = 0.5) {
+                     rep_weights = NULL, rep_method = NULL, fay_k = 0.5,
+                     pv = NULL, pv_sampling = c("first", "average")) {
   if (!is.data.frame(data)) {
     rlang::abort("data \u5fc5\u987b\u662f data.frame\u3002")
   }
@@ -39,7 +47,8 @@ lst_data <- function(data, id = NULL, group = NULL, weight = NULL,
     theta    = resolve_vars(rlang::enquo(theta), data, "theta"),
     theta_se = resolve_vars(rlang::enquo(theta_se), data, "theta_se"),
     resp     = resolve_vars(rlang::enquo(resp), data, "resp"),
-    rep_weights = resolve_rep_weights(rlang::enquo(rep_weights), data)
+    rep_weights = resolve_rep_weights(rlang::enquo(rep_weights), data),
+    pv       = resolve_pv(pv, data)
   )
   # theta 维度命名:未命名时用列名本身
   for (r in c("theta", "theta_se", "score")) {
@@ -53,7 +62,8 @@ lst_data <- function(data, id = NULL, group = NULL, weight = NULL,
   }
   x <- structure(
     list(data = data, roles = roles, key = key,
-         rep_method = rep_method, fay_k = fay_k),
+         rep_method = rep_method, fay_k = fay_k,
+         pv_sampling = match.arg(pv_sampling)),
     class = "listr_data"
   )
   lst_validate(x)
@@ -138,6 +148,22 @@ lst_validate <- function(x) {
   if (!is.null(x$key) && is.null(r$resp)) {
     rlang::abort("\u63d0\u4f9b\u4e86\u8ba1\u5206\u952e key \u4f46\u672a\u58f0\u660e resp \u4f5c\u7b54\u5217\u3002")
   }
+  if (!is.null(r$pv)) {
+    for (dim in names(r$pv)) {
+      for (pc in r$pv[[dim]]) {
+        if (!is.numeric(d[[pc]])) {
+          rlang::abort(paste0("pv \u7ef4\u5ea6 ", dim, " \u7684\u5217 ", pc,
+                              " \u5fc5\u987b\u662f\u6570\u503c\u3002"))
+        }
+      }
+      if (!is.null(r$theta) && dim %in% names(r$theta)) {
+        rlang::abort(paste0(
+          "\u7ef4\u5ea6\u540d ", dim, " \u540c\u65f6\u51fa\u73b0\u5728 pv \u548c theta \u4e2d;",
+          "\u8bf7\u4e3a\u4e24\u79cd\u80fd\u529b\u503c\u4f7f\u7528\u4e0d\u540c\u7684\u7ef4\u5ea6\u540d\u3002"
+        ))
+      }
+    }
+  }
   if (!is.null(r$rep_weights)) {
     if (is.null(x$rep_method)) {
       rlang::abort(paste0(
@@ -196,10 +222,13 @@ get_weights <- function(x) {
   }
 }
 
-# 内部:把统计量的 var 解析为 (xcol, secol)。
-# 解析顺序:theta 维度名 -> score 维度名 -> 数据列名。
+# 内部:把统计量的 var 解析为 (xcol, secol) 或 PV 列组。
+# 解析顺序:pv 维度名 -> theta 维度名 -> score 维度名 -> 数据列名。
 resolve_measure <- function(x, var) {
   r <- x$roles
+  if (!is.null(r$pv) && var %in% names(r$pv)) {
+    return(list(xcol = NULL, secol = NULL, pvcols = r$pv[[var]]))
+  }
   if (!is.null(r$theta) && var %in% names(r$theta)) {
     return(list(xcol = r$theta[[var]], secol = r$theta_se[[var]]))
   }
@@ -216,6 +245,6 @@ resolve_measure <- function(x, var) {
   }
   rlang::abort(paste0(
     "\u627e\u4e0d\u5230\u53d8\u91cf \"", var,
-    "\":\u5b83\u65e2\u4e0d\u662f theta/score \u7ef4\u5ea6\u540d,\u4e5f\u4e0d\u662f\u6570\u636e\u5217\u540d\u3002"
+    "\":\u5b83\u65e2\u4e0d\u662f pv/theta/score \u7ef4\u5ea6\u540d,\u4e5f\u4e0d\u662f\u6570\u636e\u5217\u540d\u3002"
   ))
 }

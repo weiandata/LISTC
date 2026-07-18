@@ -65,14 +65,27 @@ parse_config_xlsx <- function(path) {
   dims <- need_sheet("\u80fd\u529b\u7ef4\u5ea6")
   dims <- dims[!is.na(dims[[1]]), , drop = FALSE]
   if (nrow(dims) > 0) {
-    cfg$roles$theta <- stats::setNames(
-      as.list(trimws(as.character(dims[[2]]))),
-      trimws(as.character(dims[[1]]))
-    )
-    cfg$roles$theta_se <- stats::setNames(
-      as.list(trimws(as.character(dims[[3]]))),
-      trimws(as.character(dims[[1]]))
-    )
+    dim_names <- trimws(as.character(dims[[1]]))
+    th <- trimws(as.character(dims[[2]]))
+    se <- trimws(as.character(dims[[3]]))
+    pvcol <- if (ncol(dims) >= 4) as.character(dims[[4]]) else rep(NA, nrow(dims))
+    has_theta <- !is.na(th) & th != "" & th != "NA"
+    if (any(has_theta)) {
+      cfg$roles$theta <- stats::setNames(as.list(th[has_theta]),
+                                         dim_names[has_theta])
+      cfg$roles$theta_se <- stats::setNames(as.list(se[has_theta]),
+                                            dim_names[has_theta])
+    }
+    has_pv <- !is.na(pvcol) & trimws(pvcol) != ""
+    if (any(has_pv)) {
+      cfg$roles$pv <- stats::setNames(
+        lapply(pvcol[has_pv], function(v) {
+          v <- trimws(strsplit(v, "[,,\u3001]")[[1]])
+          if (length(v) == 1) v[[1]] else as.list(v)
+        }),
+        dim_names[has_pv]
+      )
+    }
   }
 
   tabdf <- need_sheet("\u7edf\u8ba1\u8868")
@@ -124,7 +137,8 @@ parse_config_xlsx <- function(path) {
   outm <- kv(need_sheet("\u8f93\u51fa"))
   out <- list(
     xlsx = get_kv(outm, "Excel\u8f93\u51fa\u8def\u5f84"),
-    json = get_kv(outm, "JSON\u8f93\u51fa\u8def\u5f84")
+    json = get_kv(outm, "JSON\u8f93\u51fa\u8def\u5f84"),
+    html = get_kv(outm, "HTML\u8f93\u51fa\u8def\u5f84")
   )
   out <- out[!vapply(out, is.null, logical(1))]
   if (length(out) > 0) cfg$output <- out

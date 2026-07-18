@@ -74,18 +74,33 @@ lst_table <- function(x, rows = NULL, cols = NULL, values,
                          })
     } else {
       prep <- prepare_measure(x, dt, spec)
-      res <- compute_grouped(prep$dt, spec, sets, grp_vars,
-                             prep$xcol, prep$secol, repw)
-      meta[[nm]] <- list(
-        type = spec$type, var = prep$var, is_prop = spec$is_prop,
-        method = spec$params$method, correction = spec$params$correction,
-        rho = prep$rho,
-        variance = if (is.null(repw)) {
-          "linearized"
-        } else {
-          paste0("replicate:", repw$method)
-        }
-      )
+      if (!is.null(prep$pvcols)) {
+        res <- compute_grouped_pv(dt, spec, sets, grp_vars, prep$pvcols,
+                                  repw, x$pv_sampling %||% "first")
+        meta[[nm]] <- list(
+          type = spec$type, var = prep$var, is_prop = spec$is_prop,
+          method = spec$params$method,
+          n_pv = length(prep$pvcols),
+          pv_sampling = x$pv_sampling %||% "first",
+          variance = paste0(
+            "rubin+",
+            if (is.null(repw)) "linearized" else paste0("replicate:", repw$method)
+          )
+        )
+      } else {
+        res <- compute_grouped(prep$dt, spec, sets, grp_vars,
+                               prep$xcol, prep$secol, repw)
+        meta[[nm]] <- list(
+          type = spec$type, var = prep$var, is_prop = spec$is_prop,
+          method = spec$params$method, correction = spec$params$correction,
+          rho = prep$rho,
+          variance = if (is.null(repw)) {
+            "linearized"
+          } else {
+            paste0("replicate:", repw$method)
+          }
+        )
+      }
     }
     res[, statistic := nm]
     parts[[i]] <- res
@@ -113,6 +128,18 @@ prepare_measure <- function(x, dt, spec) {
   }
   var <- resolve_stat_var(spec$var_quo, x)
   m <- resolve_measure(x, var)
+  if (!is.null(m$pvcols)) {
+    # PV 维度:Rubin 合并路径;prob/latent 不适用(PV 已含测量不确定性)
+    if (identical(spec$params$method, "prob")) {
+      rlang::abort(paste0(
+        "PV \u7ef4\u5ea6 \"", var, "\" \u4e0d\u652f\u6301 method = \"prob\":",
+        "plausible values \u672c\u8eab\u5df2\u643a\u5e26\u6d4b\u91cf\u4e0d\u786e\u5b9a\u6027,",
+        "\u8bf7\u4f7f\u7528 method = \"hard\"(Rubin \u5408\u5e76\u4f1a\u7ed9\u51fa\u6b63\u786e\u7684\u603b\u65b9\u5dee)\u3002"
+      ))
+    }
+    return(list(dt = dt, xcol = NULL, secol = NULL, var = var,
+                rho = NULL, pvcols = m$pvcols))
+  }
   rho <- NULL
   if (identical(spec$params$correction, "latent") &&
       identical(spec$params$method, "prob")) {
@@ -130,7 +157,7 @@ prepare_measure <- function(x, dt, spec) {
 
 # 统计量 var 的解析:先按维度名,再退回数据列裸名/字符串
 resolve_stat_var <- function(quo, x) {
-  dims <- c(names(x$roles$theta), names(x$roles$score))
+  dims <- c(names(x$roles$pv), names(x$roles$theta), names(x$roles$score))
   env <- c(
     stats::setNames(as.list(dims), dims),
     col_env(x$data)
@@ -203,6 +230,32 @@ compute_grouped <- function(dt, spec, sets, grp_vars, xcol, secol,
       }
     }
     # 无 by 时 j 返回 data.frame,转回 data.table 再补 margins 标签
+    res <- data.table::as.data.table(res)
+    for (mv in setdiff(grp_vars, by)) {
+      res[, (mv) := TOTAL_LABEL]
+    }
+    out[[s]] <- res
+  }
+  data.table::rbindlist(out, use.names = TRUE, fill = TRUE)
+}
+
+# PV/Rubin 路径的分组计算(v0.4)
+compute_grouped_pv <- function(dt, spec, sets, grp_vars, pvcols, repw,
+                               pv_sampling) {
+  keep <- c(pvcols, ".lstw", repw$cols)
+  sub <- dt[stats::complete.cases(dt[, keep, with = FALSE])]
+  npv <- length(pvcols)
+  factor <- repw$factor
+  out <- vector("list", length(sets))
+  for (s in seq_along(sets)) {
+    by <- sets[[s]]
+    res <- if (length(by) > 0) {
+      sub[, compute_stat_pv(spec, .SD, npv, factor, pv_sampling),
+          by = by, .SDcols = keep]
+    } else {
+      sub[, compute_stat_pv(spec, .SD, npv, factor, pv_sampling),
+          .SDcols = keep]
+    }
     res <- data.table::as.data.table(res)
     for (mv in setdiff(grp_vars, by)) {
       res[, (mv) := TOTAL_LABEL]

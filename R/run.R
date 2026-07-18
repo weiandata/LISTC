@@ -20,7 +20,7 @@ lst_run <- function(config, quiet = FALSE) {
       vapply(tb$values, function(v) v$var %||% NA_character_, character(1)))
   }), use.names = FALSE)
   used_vars <- setdiff(stats::na.omit(used_vars),
-                       c(names(r$theta), names(r$score)))
+                       c(names(r$theta), names(r$score), names(r$pv)))
   needs_items <- any(unlist(lapply(cfg$tables, function(tb) {
     vapply(tb$values, function(v) v$stat %in% c("st_pvalue", "st_option_dist"),
            logical(1))
@@ -31,20 +31,42 @@ lst_run <- function(config, quiet = FALSE) {
     if (needs_items) unlist(r$resp), used_vars
   ))
 
-  # \u590d\u5236\u6743\u91cd:\u663e\u5f0f\u5217\u540d\u76f4\u63a5\u52a0\u5165;\u524d\u7f00\u5219\u5148\u7aa5\u89c6\u8868\u5934\u5c55\u5f00(csv/tsv),
-  # \u5176\u4ed6\u683c\u5f0f\u9000\u56de\u8bfb\u53d6\u5168\u90e8\u5217
+  # \u590d\u5236\u6743\u91cd/PV \u6a21\u677f:\u663e\u5f0f\u5217\u540d\u76f4\u63a5\u52a0\u5165;\u524d\u7f00\u6216 # \u6a21\u677f\u5219\u5148\u7aa5\u89c6\u8868\u5934
+  # \u5c55\u5f00(csv/tsv),\u5176\u4ed6\u683c\u5f0f\u9000\u56de\u8bfb\u53d6\u5168\u90e8\u5217
+  peek_header <- function() {
+    ext <- tolower(tools::file_ext(cfg$data))
+    if (ext %in% c("csv", "tsv", "txt")) {
+      names(data.table::fread(cfg$data, nrows = 0))
+    } else {
+      NULL
+    }
+  }
   rep_spec <- unlist(r$rep_weights)
   if (!is.null(rep_spec)) {
     if (length(rep_spec) > 1) {
       cols <- unique(c(cols, rep_spec))
-    } else {
-      ext <- tolower(tools::file_ext(cfg$data))
-      if (ext %in% c("csv", "tsv", "txt")) {
-        hdr <- names(data.table::fread(cfg$data, nrows = 0))
+    } else if (!is.null(cols)) {
+      hdr <- peek_header()
+      if (is.null(hdr)) {
+        cols <- NULL
+      } else {
         hits <- grep(paste0("^", rep_spec, "[0-9]+$"), hdr, value = TRUE)
         cols <- unique(c(cols, if (length(hits) > 0) hits else rep_spec))
+      }
+    }
+  }
+  if (!is.null(r$pv) && !is.null(cols)) {
+    for (dim in names(r$pv)) {
+      v <- as.character(unlist(r$pv[[dim]]))
+      if (length(v) == 1 && grepl("#", v, fixed = TRUE)) {
+        hdr <- peek_header()
+        if (is.null(hdr)) {
+          cols <- NULL
+          break
+        }
+        cols <- unique(c(cols, expand_pv_template(v, hdr)))
       } else {
-        cols <- NULL # \u65e0\u6cd5\u4fbf\u5b9c\u5730\u7aa5\u89c6\u8868\u5934,\u8bfb\u5168\u90e8\u5217
+        cols <- unique(c(cols, v))
       }
     }
   }
@@ -61,6 +83,10 @@ lst_run <- function(config, quiet = FALSE) {
   roles_theta_se <- unlist(r$theta_se)
   roles_resp <- unlist(r$resp)
   roles_repw <- unlist(r$rep_weights)
+  roles_pv <- r$pv
+  if (!is.null(roles_pv)) {
+    roles_pv <- lapply(roles_pv, function(v) as.character(unlist(v)))
+  }
   x <- lst_data(
     data,
     id = roles_id, group = roles_group, weight = roles_weight,
@@ -68,7 +94,9 @@ lst_run <- function(config, quiet = FALSE) {
     resp = roles_resp, key = r$key,
     rep_weights = roles_repw,
     rep_method = r$rep_method,
-    fay_k = r$fay_k %||% 0.5
+    fay_k = r$fay_k %||% 0.5,
+    pv = roles_pv,
+    pv_sampling = r$pv_sampling %||% "first"
   )
 
   tables <- list()
@@ -98,6 +126,11 @@ lst_run <- function(config, quiet = FALSE) {
     lst_to_json(tables, cfg$output$json)
     outputs <- c(outputs, cfg$output$json)
     say("\u5df2\u5199\u51fa JSON: ", cfg$output$json)
+  }
+  if (!is.null(cfg$output$html)) {
+    lst_to_html(tables, cfg$output$html)
+    outputs <- c(outputs, cfg$output$html)
+    say("\u5df2\u5199\u51fa HTML: ", cfg$output$html)
   }
 
   log <- list(

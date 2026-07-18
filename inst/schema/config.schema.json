@@ -29,7 +29,18 @@
           ]
         },
         "rep_method": { "enum": ["fay", "brr", "jk1", "jk2"] },
-        "fay_k": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 }
+        "fay_k": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+        "pv": {
+          "description": "Plausible values: dimension -> array of columns or a template with # for the PV number, e.g. {math: \"PV#MATH\"}",
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "array", "items": { "type": "string" } }
+            ]
+          }
+        },
+        "pv_sampling": { "enum": ["first", "average"] }
       }
     },
     "tables": {
@@ -73,7 +84,8 @@
       "type": "object",
       "properties": {
         "xlsx": { "type": "string" },
-        "json": { "type": "string" }
+        "json": { "type": "string" },
+        "html": { "type": "string" }
       }
     }
   }

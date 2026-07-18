@@ -16,7 +16,9 @@ lst_data(
   key = NULL,
   rep_weights = NULL,
   rep_method = NULL,
-  fay_k = 0.5
+  fay_k = 0.5,
+  pv = NULL,
+  pv_sampling = c("first", "average")
 )
 }
 \arguments{
@@ -48,6 +50,15 @@ sampling variance switches to the replicate-weights engine.}
 \code{"brr"}, \code{"jk1"}, or \code{"jk2"} (TIMSS). Required with \code{rep_weights}.}
 
 \item{fay_k}{Fay factor for \code{rep_method = "fay"} (default 0.5).}
+
+\item{pv}{Plausible values (v0.4): named list, dimension -> PV columns
+or a template with \verb{#} for the PV number, e.g.
+\code{pv = list(math = "PV#MATH")} expands to PV1MATH..PV10MATH.
+PV dimensions are analyzed with Rubin combination.}
+
+\item{pv_sampling}{Sampling-variance convention for PV dimensions:
+\code{"first"} (PISA manual practice: first PV only) or \code{"average"}
+(average across all PVs).}
 }
 \value{
 A \code{listr_data} object.

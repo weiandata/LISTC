@@ -9,6 +9,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- v0.4: plausible-values engine with Rubin combination (`pv` role with
+  `PV#MATH` template expansion, `pv_sampling` first/average, composes
+  with the replicate-weights engine for the full PISA variance recipe;
+  `method = "prob"` rejected on PV dimensions with guidance), plus a
+  dependency-free `lst_to_html()` styled report (tables,
+  interpretation, variance-method footnote) wired into `lst_run()`
+  outputs, config schema and the Excel template.
+
 - v0.3: replicate-weights variance engine (`rep_weights` prefix or
   column list, `rep_method` fay/brr/jk1/jk2, `fay_k`) applied uniformly
   to all statistics with the measurement-variance component still added

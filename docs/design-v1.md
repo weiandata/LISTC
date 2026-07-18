@@ -223,6 +223,30 @@ meta 记录 `variance = "replicate:<method>"`。
 经验 SE 0.0722,JK1 引擎 0.0702(比值 0.97),线性化公式
 0.0339——整群设计效应约 4 倍,验证了引擎的必要性与正确性。
 
+### 6.2 plausible values / Rubin 引擎(v0.4,2026-07-18 实现)
+
+`lst_data()` 声明 `pv = list(math = "PV#MATH")`(# 为编号占位,
+自动展开为 PV1MATH..PVmMATH)后,该维度的所有统计量走
+Rubin 合并:
+
+- 点估计:est = mean_m(est_m)
+- 插补方差:B = var_m(est_m),计入 se_measurement =
+  √((1+1/M)B)
+- 抽样方差 U:各 PV 的抽样方差(线性化,或声明了复制权重时
+  用 replicate 法)按 `pv_sampling` 口径合并——`"first"`
+  (PISA 手册常用,只算第 1 个 PV)或 `"average"`(全 PV 平均)
+- 总方差 = U + (1+1/M)B;meta 记录
+  `variance = "rubin+replicate:fay"` 等
+
+约束:PV 维度不支持 `method = "prob"`(PV 本身已携带测量
+不确定性,硬分类 + Rubin 即为正确做法,报错信息会说明);
+pv 与 theta 维度名不得重复。
+
+蒙特卡洛验证(test-pv.R):Rubin 总方差 95% 置信覆盖率 0.99
+(略保守,符合 Rubin 方法特性);PV 硬分类的等级占比对潜在
+分布校准(真值 0.1125,估计 0.1163);PV × replicate 组合
+(PISA 完整方差)分量正交可加。
+
 ## 7. 透视层
 
 核心 API,一次调用产出透视表:
@@ -360,7 +384,11 @@ jsonlite, yaml, data.table。
 - v0.3(2026-07-18 实现,待验收):replicate weights 方差引擎
   (fay/brr/jk1/jk2,前缀展开,配置层与 Excel 模板同步);
   option_dist 的 replicate SE 留待 v0.3.x
-- v0.4:plausible values(Rubin 合并)引擎、HTML 渲染
+- v0.4(2026-07-18 实现,待验收):plausible values/Rubin 引擎
+  (PV#模板展开、first/average 口径、与 replicate 组合)、
+  零依赖 lst_to_html() 报告渲染(中文样式+自动解读+方法脚注)、
+  配置层/Schema/Excel 模板同步(能力维度 sheet 增 PV 列,
+  输出增 HTML)
 - v1.0:CRAN 提交
 
 ## 12. 已决问题(2026-07-18)
