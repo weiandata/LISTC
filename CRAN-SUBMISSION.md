@@ -7,8 +7,8 @@ Submit at <https://xmpalantir.wu.ac.at/cransubmit/>.
 | Field | Value |
 | --- | --- |
 | File | `LISTC_1.0.0.tar.gz` |
-| Size | 83,210 bytes |
-| SHA-256 | `eb433259898c1b03b1a810ae8ab7006a6c07e4166fe1bc8c55ce70e9a6b4add2` |
+| Size | 83,686 bytes |
+| SHA-256 | `a9749a8b98a1e7095090a21573749fea43760f81338fbe704446508a5166c929` |
 | Built with | R 4.6.0, `R CMD build .` |
 
 ## Step 1 — form fields

@@ -17,7 +17,15 @@ built-in default label (Chinese for "missing").}
 A statistic spec for \code{\link[=lst_table]{lst_table()}}.
 }
 \description{
-Weighted item option distribution (including missing rate)
+Unlike the other statistics, this one reports point estimates only:
+\code{se_sampling}, \code{se_measurement} and \code{se_total} are \code{NA} for every
+option category, under linearization and under replicate weights
+alike. Option distributions are used for item screening rather than
+for reported estimates, so no variance estimator is implemented yet.
+Note that the table metadata still records the variance engine that
+was in effect for the other statistics in the same table. Use
+\code{\link[=st_pvalue]{st_pvalue()}}, which does carry sampling standard errors, when you
+need an item statistic with a standard error.
 }
 \examples{
 d <- data.frame(id = 1:50,
