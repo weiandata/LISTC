@@ -1,6 +1,11 @@
 # CRAN submission — LISTC 1.0.0
 
-Submit at <https://xmpalantir.wu.ac.at/cransubmit/>.
+Submit at <https://cran.r-project.org/submit.html>.
+
+That page frames the submission form, which is itself served from
+`xmpalantir.wu.ac.at/cransubmit/`. Use the `cran.r-project.org` address;
+the framed one is an implementation detail and is not the documented
+entry point.
 
 ## Artifact
 
